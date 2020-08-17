@@ -1,0 +1,29 @@
+view,
+text,
+image {
+  box-sizing: border-box;
+}
+
+/* 文字 */
+.text-main {
+  color: #fb7299;
+}
+.text-main-hover {
+  color: #fb85a7;
+}
+.text-main-disabled {
+  color: #fb85a7;
+}
+
+/* 背景 */
+
+/* 行高 */
+.line-h {
+  line-height: 1.2;
+}
+
+/* 分割线 */
+.f-divider {
+  height: 18rpx;
+  background-color: #f5f5f4;
+}
