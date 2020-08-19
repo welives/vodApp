@@ -6,7 +6,7 @@ image {
 
 /* 文字 */
 .text-main {
-  color: #fb7299;
+  color: #fb7299 !important;
 }
 .text-main-hover {
   color: #fb85a7;
@@ -16,6 +16,20 @@ image {
 }
 
 /* 背景 */
+.bg-main {
+  background-color: #fb7299 !important;
+}
+.bg-main-hover {
+  background-color: #fb85a7;
+}
+.bg-main-disabled {
+  background-color: #fb85a7;
+}
+
+/* 边框 */
+.border-main {
+  border-color: #fb7299 !important;
+}
 
 /* 行高 */
 .line-h {

@@ -4,32 +4,145 @@
     {
       "path": "pages/index/index",
       "style": {
-        "app-plus":{
-          "titleNView":{
-            "searchInput":{
-              "align":"left",
-              "backgroundColor":"#F6F7F8",
-              "borderRadius":"6px",
-              "disabled":true,
-              "placeholder":"uni-app视频点播app&小程序项目实战",
-              "placeholderColor":"#959FA0"
+        "app-plus": {
+          "titleNView": {
+            "searchInput": {
+              "align": "left",
+              "backgroundColor": "#F6F7F8",
+              "borderRadius": "6px",
+              "disabled": true,
+              "placeholder": "uni-app视频点播app&小程序项目实战",
+              "placeholderColor": "#959FA0"
             },
-            "buttons":[{
-              "float":"right",
-              "text":"分类",
-              "fontSize":"14px",
-              "color":"#959FA0",
-              "colorPressed":"#333333"
-            }]
+            "buttons": [
+              {
+                "float": "right",
+                "text": "分类",
+                "fontSize": "14px",
+                "color": "#959FA0",
+                "colorPressed": "#333333"
+              }
+            ]
           }
         }
       }
-    }, {
+    },
+    {
       "path": "pages/cate/cate",
-      "style": {}
-    }, {
+      "style": {
+        "app-plus": {
+          "titleNView": {
+            "searchInput": {
+              "align": "left",
+              "backgroundColor": "#F6F7F8",
+              "borderRadius": "6px",
+              "disabled": true,
+              "placeholder": "uni-app视频点播app&小程序项目实战",
+              "placeholderColor": "#959FA0"
+            }
+          }
+        }
+      }
+    },
+    {
       "path": "pages/mine/mine",
-      "style": {}
+      "style": {
+        "navigationBarTitleText": "个人中心",
+        "app-plus": {
+          "titleNView": {
+            "buttons": [
+              {
+                "color": "#333333",
+                "colorPressed": "#333333",
+                "float": "right",
+                "fontSize": "18px",
+                "fontSrc": "/static/iconfont.ttf",
+                "text": "\ue61a"
+              },
+              {
+                "color": "#333333",
+                "colorPressed": "#333333",
+                "float": "right",
+                "fontSize": "18px",
+                "fontSrc": "/static/iconfont.ttf",
+                "text": "\ue695"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "path": "pages/create/create",
+      "style": {
+        "navigationBarTitleText": "发布作品",
+        "app-plus": {
+          "titleNView": {
+            "buttons": [
+              {
+                "color": "#FB7299",
+                "colorPressed": "#FB85A7",
+                "float": "right",
+                "fontSize": "14px",
+                "text": "发布"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "path": "pages/user-video/user-video",
+      "style": {
+        "navigationBarTitleText": "我的作品"
+      }
+    },
+    {
+      "path": "pages/user-collect/user-collect",
+      "style": {
+        "navigationBarTitleText": "我的收藏"
+      }
+    },
+    {
+      "path": "pages/user-video-list/user-video-list",
+      "style": {
+        "navigationBarTitleText": "视频列表"
+      }
+    },
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登入",
+        "app-plus": {
+          "titleNView": false
+        }
+      }
+    },
+    {
+      "path": "pages/user-space/user-space",
+      "style": {
+        "navigationBarTitleText": "",
+        "app-plus": {
+          "titleNView": {
+            "type": "transparent",
+            "buttons": [
+              {
+                "type": "menu",
+                "float": "right"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "path": "pages/video-detail/video-detail",
+      "style": {
+        "navigationBarTitleText": "",
+        "app-plus": {
+          "titleNView": false
+        }
+      }
     }
   ],
   "globalStyle": {
@@ -42,7 +155,8 @@
     "borderStyle": "black",
     "selectedColor": "#FB7299",
     "color": "#444444",
-    "list": [{
+    "list": [
+      {
         "pagePath": "pages/index/index",
         "iconPath": "static/tabbar/find.png",
         "selectedIconPath": "static/tabbar/find-selected.png",
