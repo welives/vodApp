@@ -1,8 +1,8 @@
 <template>
-  <view>
-    <image src="/static/demo/list2/3.jpg" mode="aspectFill" style="width: 100%; height: 320rpx;"></image>
-    <view class="border-bottom" style="height: 330rpx;">
-      <view class="flex align-center justify-between px-3 my-1">
+  <view style="line-height: 0;">
+    <image src="/static/demo/list2/3.jpg" mode="aspectFill" style="width: 100%; height: 160px;"></image>
+    <view class="border-bottom" style="height: 180px;">
+      <view class="flex align-center justify-between px-3 py-1">
         <image
           src="/static/demo/6.jpg"
           class="rounded-circle"
@@ -31,26 +31,39 @@
         >
       </view>
     </view>
-    <view class="flex align-center" style="height: 44px;">
+    <scroll-view scroll-y :style="`height:${scrollHeight}px`" style="position: relative;">
+      <!-- 选项卡 开始 -->
       <view
-        class="flex-1 flex align-center justify-center"
-        v-for="(item, index) in tabBars"
-        :key="index"
-        @click="tabIndex = index"
+        class="flex align-center bg-white position-absolute"
+        style="height: 44px; top: 0; left: 0; right: 0; z-index: 100;"
       >
-        <text class="font" :class="tabIndex === index ? 'text-main' : ''">{{ item.name }}</text>
+        <view
+          class="flex-1 flex align-center justify-center"
+          v-for="(item, index) in tabBars"
+          :key="index"
+          @click="tabIndex = index"
+        >
+          <text class="font" :class="tabIndex === index ? 'text-main' : ''">{{ item.name }}</text>
+        </view>
       </view>
-    </view>
-    <swiper :current="tabIndex" :duration="300" :style="'height:' + scrollHeight + 'px;'" @change="changeSwiper">
-      <swiper-item v-for="(tab, tabI) in tabBars" :key="tabI">
-        <scroll-view scroll-y :style="'height:' + scrollHeight + 'px;'">
-          <view class="f-divider"></view>
-          <view class="px-1" v-for="(item, index) in list" :key="index">
-            <media-list :item="item" :index="index"></media-list>
-          </view>
-        </scroll-view>
-      </swiper-item>
-    </swiper>
+      <!-- 选项卡 结束 -->
+      <swiper
+        :current="tabIndex"
+        :duration="300"
+        @change="changeSwiper"
+        style="position: absolute; top: 44px; width: 100%;"
+        :style="`height:${scrollHeight - 44}px`"
+      >
+        <swiper-item v-for="(tab, tabI) in tabBars" :key="tabI">
+          <scroll-view scroll-y style="height: 100%;">
+            <view class="f-divider"></view>
+            <view class="px-1" v-for="(item, index) in list" :key="index">
+              <media-list :item="item" :index="index"></media-list>
+            </view>
+          </scroll-view>
+        </swiper-item>
+      </swiper>
+    </scroll-view>
   </view>
 </template>
 
@@ -79,6 +92,27 @@ export default {
       ],
       scrollHeight: 0,
       list: [
+        {
+          cover: '/static/demo/list2/1.jpg',
+          title: 'uni-app视频点播app&小程序项目实战',
+          created_time: '今天 01:06',
+          play_count: 0,
+          danmu_count: 0,
+        },
+        {
+          cover: '/static/demo/list2/1.jpg',
+          title: 'uni-app视频点播app&小程序项目实战',
+          created_time: '今天 01:06',
+          play_count: 0,
+          danmu_count: 0,
+        },
+        {
+          cover: '/static/demo/list2/1.jpg',
+          title: 'uni-app视频点播app&小程序项目实战',
+          created_time: '今天 01:06',
+          play_count: 0,
+          danmu_count: 0,
+        },
         {
           cover: '/static/demo/list2/1.jpg',
           title: 'uni-app视频点播app&小程序项目实战',

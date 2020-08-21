@@ -1,0 +1,240 @@
+<template>
+  <view>
+    <video
+      id="video"
+      ref="video"
+      style="width: 750rpx; height: 225px;"
+      :src="src"
+      :poster="poster"
+      :controls="false"
+      :show-center-play-btn="false"
+      :show-fullscreen-btn="false"
+      :show-progress="false"
+      :enable-progress-gesture="false"
+      @fullscreenchange="fullscreenChange"
+      @timeupdate="timeUpdate"
+      @play="isPlay = true"
+      @pause="isPlay = false"
+    >
+      <view class="position-absolute flex align-center justify-center" :style="videoBox">
+        <!-- 蒙板 -->
+        <!-- <view class="position-absolute left-0 right-0 top-0 bottom-0"></view> -->
+        <!-- 提示框 -->
+        <view v-if="isShowToast" class="p-2 rounded" style="background-color: rgba(0, 0, 0, 0.3);">
+          <text v-if="toast.type === 'progress'" class="text-white">{{ currentTime | formatVideoTime }}</text>
+          <text v-if="toast.type === 'msg'" class="text-white">{{ toast.msg }}</text>
+        </view>
+      </view>
+    </video>
+    <!-- 非全屏 -->
+    <view v-if="isShowVideoBar" class="video-bg-top position-fixed top-0 left-0 right-0">
+      <!-- 状态栏 -->
+      <view :style="`height:${statusBarHeight}px;`"></view>
+      <view class="flex align-center" style="height: 44px;">
+        <!-- 顶部返回按钮 -->
+        <f-icon-btn :icon="'\ue612'" @click="back"></f-icon-btn>
+      </view>
+    </view>
+    <!-- 底部控制条 -->
+    <view v-if="isShowVideoBar" class="video-bg-bottom position-fixed bottom-0 left-0 right-0">
+      <view class="flex align-center" style="height: 44px;">
+        <!-- 播放 -->
+        <f-icon-btn v-if="!isPlay" :icon="'\ue63a'" size="22" @click="playOrPause"></f-icon-btn>
+        <!-- 暂停 -->
+        <f-icon-btn v-else :icon="'\ue605'" size="22" @click="playOrPause"></f-icon-btn>
+        <!-- 进度条 -->
+        <view class="flex-1">
+          <f-slider :currentTime="currentTime" :duration="duration"></f-slider>
+        </view>
+        <!-- 视频时长 -->
+        <view class="flex align-center justify-center" style="width: 80px;">
+          <text class="font-sm text-white">{{ currentTime | formatVideoTime }}/{{ duration | formatVideoTime }}</text>
+        </view>
+        <!-- 全屏 -->
+        <f-icon-btn :icon="'\ue800'" size="22"></f-icon-btn>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+const dom = weex.requireModule('dom')
+import common from '@/common/mixins/common'
+import fIconBtn from './components/f-icon-btn'
+import fSlider from './components/f-slider'
+export default {
+  provide() {
+    return {
+      v: this,
+    }
+  },
+  components: {
+    fIconBtn,
+    fSlider,
+  },
+  mixins: [common],
+  data() {
+    return {
+      // 状态栏高度
+      statusBarHeight: 0,
+      // 视频实例
+      videoCtx: null,
+      // 播放状态
+      isPlay: false,
+      // 当前播放时长
+      currentTime: 0,
+      // 视频总时长
+      duration: 0,
+      // 视频源
+      src:
+        'https://douyinzcmcss.oss-cn-shenzhen.aliyuncs.com/%E8%AF%BE%E6%97%B61.%20%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D.mp4',
+      // 封面
+      poster: 'https://ss2.bdstatic.com/8_V1bjqh_Q23odCf/pacific/1696374343.jpg',
+      // 可使用窗口宽度
+      windowWidth: 0,
+      // 可使用窗口高度
+      windowHeight: 0,
+      // 是否全屏
+      isFullscreen: false,
+      // 是否显示视频控制条
+      isShowVideoBar: true,
+      // 是否显示提示框
+      isShowToast: false,
+      // 提示内容
+      toast: { type: 'msg', msg: '提示' },
+      // 点击类型
+      touchType: null,
+      // 点击次数
+      touchCount: 0,
+      oldTouches: {},
+      oldValue: {},
+    }
+  },
+  computed: {
+    videoBox() {
+      return this.isFullscreen
+        ? `width:${this.windowWidth}px; height:${this.windowHeight}px;`
+        : 'width:750rpx; height:225px;'
+    },
+  },
+  onLoad() {
+    let res = uni.getSystemInfoSync()
+    this.statusBarHeight = res.statusBarHeight
+    this.windowWidth = res.windowWidth
+    this.windowHeight = res.windowHeight
+    // 引入图标
+    dom.addRule('fontFace', {
+      fontFamily: 'iconfont',
+      src: "url('https://at.alicdn.com/t/font_1419176_mzo8rsjxi4c.ttf')",
+    })
+  },
+  onReady() {
+    // 获取播放实例
+    this.videoCtx = this.$refs.video
+  },
+  methods: {
+    // 显示提示框
+    showToast(options = {}) {
+      this.toast.type = options.type || 'msg'
+      this.toast.msg = options.msg || '提示'
+      this.isShowToast = true
+      let timer = null
+      timer && clearTimeout(timer)
+      timer = setTimeout(() => {
+        this.isShowToast = false
+        timer = null
+      }, 500)
+    },
+    // 显示或隐藏视频控制条
+    showOrHideVideoBar() {
+      // this.isShowVideoBar ? this.hideVideoBar() : this.showVideoBar()
+    },
+    // 显示视频控制条
+    showVideoBar() {
+      // this.isShowVideoBar = true
+      // let timer = null
+      // timer && clearTimeout(timer)
+      // // 2秒后隐藏控制条
+      // setTimeout(() => {
+      //   this.hideVideoBar()
+      //   timer = null
+      // }, 3000)
+    },
+    // 隐藏视频控制条
+    hideVideoBar() {
+      // 处于播放状态时才隐藏控制条
+      // this.isPlay && (this.isShowVideoBar = false)
+    },
+    // 播放||暂停
+    playOrPause() {
+      this.showToast({
+        msg: this.isPlay ? '暂停' : '播放',
+      })
+      if (this.isPlay) {
+        this.videoCtx.pause()
+      } else {
+        this.videoCtx.play()
+      }
+    },
+    // 同步播放进度
+    sliderUpdate(e) {
+      // this.showVideoBar()
+      // this.currentTime = e
+      // this.videoCtx.seek(e)
+    },
+    touchStart(e) {
+      // this.oldTouches = e.changedTouches[0]
+      // this.oldValue = { currentTime: this.currentTime }
+    },
+    touchMove(e) {
+      // let newTouches = e.changedTouches[0]
+      // if (!this.touchType) {
+      //   this.touchType = Math.abs(newTouches.pageX - this.oldTouches.pageX) > 20 ? 'currentTime' : null
+      //   this.touchType === 'currentTime' && this.videoCtx.pause()
+      // } else if (this.touchType === 'currentTime') {
+      //   this.isShowVideoBar = true
+      //   let newCurrentTime =
+      //     ((newTouches.pageX - this.oldTouches.pageX) / 250) * this.duration * 2 + this.oldValue.currentTime * 1
+      //   this.currentTime = newCurrentTime > this.duration ? this.duration : newCurrentTime < 0 ? 0 : newCurrentTime
+      // }
+    },
+    touchEnd(e) {
+      // if (this.touchType === 'currentTime') {
+      //   this.videoCtx.seek(this.currentTime)
+      //   this.videoCtx.play()
+      // } else {
+      //   this.touchCount < 2 && this.touchCount++
+      //   if (this.touchCount > 0) {
+      //     setTimeout(() => {
+      //       // 单击
+      //       if (this.touchCount === 1) {
+      //         this.showOrHideVideoBar()
+      //       }
+      //       // 双击
+      //       if (this.touchCount === 2) {
+      //         this.playOrPause()
+      //       }
+      //       this.touchCount = 0
+      //     }, 250)
+      //   }
+      // }
+      // this.touchType = null
+    },
+    fullscreenChange(e) {},
+    timeUpdate(e) {
+      // !this.showToast && (this.currentTime = parseInt(e.detail.currentTime))
+      this.currentTime = parseInt(e.detail.currentTime)
+      this.duration = parseInt(e.detail.duration)
+    },
+  },
+}
+</script>
+
+<style scoped>
+.video-bg-top {
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+}
+.video-bg-bottom {
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
+}
+</style>

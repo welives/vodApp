@@ -1,11 +1,13 @@
 <template>
   <view style="line-height: 0;">
+    <!-- #ifndef APP-PLUS -->
     <video :src="detail.src" :poster="detail.poster" style="height: 225px; width: 100%;" controls></video>
-    <scroll-view scroll-y :style="'height:' + scrollHeight + 'px;'">
+    <!-- #endif -->
+    <scroll-view scroll-y :style="`height:${scrollHeight}px`">
       <!-- 选项卡 开始 -->
       <view
         class="border-bottom border-light-secondary bg-white flex align-stretch position-fixed"
-        style="height: 80rpx; left: 0; right: 0; top: 225px; z-index: 100;"
+        style="height: 80rpx; left: 0; right: 0; z-index: 100;"
       >
         <block v-for="(tab, index) in tabBars" :key="index">
           <view class="flex-1 flex align-center justify-center" @click="tabIndex = index">
@@ -100,7 +102,7 @@
         <view
           class="position-fixed flex align-center justify-center bg-main rounded-circle animate__animated"
           hover-class="bg-main-hover animate__pulse"
-          style="width: 100rpx; height: 100rpx;right: 50rpx; bottom: 50rpx;"
+          style="width: 100rpx; height: 100rpx; right: 50rpx; bottom: 50rpx;"
           @click="openComment"
         >
           <text class="text-white iconfont iconjia"></text>

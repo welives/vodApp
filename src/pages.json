@@ -138,9 +138,22 @@
     {
       "path": "pages/video-detail/video-detail",
       "style": {
+        "navigationBarTextStyle": "white",
         "navigationBarTitleText": "",
         "app-plus": {
-          "titleNView": false
+          "titleNView": false,
+          "subNVues": [
+            {
+              "id": "top",
+              "path": "pages/video-detail/subNVue/video",
+              "style": {
+                "position": "dock",
+                "dock": "top",
+                "width": "100%",
+                "height": "225px"
+              }
+            }
+          ]
         }
       }
     }

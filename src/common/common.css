@@ -1,8 +1,10 @@
+/* #ifndef APP-PLUS-NVUE */
 view,
 text,
 image {
   box-sizing: border-box;
 }
+/* #endif */
 
 /* 文字 */
 .text-main {
