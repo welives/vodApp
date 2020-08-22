@@ -4,8 +4,8 @@
       id="video"
       ref="video"
       style="width: 750rpx; height: 225px;"
-      :src="src"
-      :poster="poster"
+      :src="detail.src"
+      :poster="detail.poster"
       :controls="false"
       :show-center-play-btn="false"
       :show-fullscreen-btn="false"
@@ -39,7 +39,7 @@
           </view>
         </view>
         <!-- 提示框 -->
-        <view v-if="isShowToast" class="p-2 rounded" style="background-color: rgba(0, 0, 0, 0.3);">
+        <view v-if="toast.isShow" class="p-2 rounded" style="background-color: rgba(0, 0, 0, 0.3);">
           <text v-if="toast.type === 'msg'" class="text-white">{{ toast.msg }}</text>
         </view>
         <!-- 全屏时的顶部控制条 -->
@@ -55,7 +55,7 @@
             </view>
             <!-- 视频标题 -->
             <view class="flex align-center px-2">
-              <text class="text-white" style="lines: 1; font-size: 15px;">视频标题</text>
+              <text class="text-white" style="lines: 1; font-size: 15px;">{{ detail.title }}</text>
             </view>
           </view>
           <view class="flex align-center">
@@ -76,12 +76,12 @@
             <f-icon-btn v-else :icon="'\ue605'" size="22" @click="playOrPause"></f-icon-btn>
             <!-- 进度条 -->
             <view class="flex-1">
-              <f-slider :currentTime="currentTime" :duration="duration" @update="sliderUpdate"></f-slider>
+              <f-slider :currentTime="detail.currentTime" :duration="detail.duration" @update="sliderUpdate"></f-slider>
             </view>
             <!-- 视频时长 -->
             <view class="flex align-center justify-center" style="width: 80px;">
               <text class="font-sm text-white"
-                >{{ currentTime | formatVideoTime }}/{{ duration | formatVideoTime }}</text
+                >{{ detail.currentTime | formatVideoTime }}/{{ detail.duration | formatVideoTime }}</text
               >
             </view>
           </view>
@@ -161,11 +161,13 @@
         <f-icon-btn v-else :icon="'\ue605'" size="22" @click="playOrPause"></f-icon-btn>
         <!-- 进度条 -->
         <view class="flex-1">
-          <f-slider :currentTime="currentTime" :duration="duration" @update="sliderUpdate"></f-slider>
+          <f-slider :currentTime="detail.currentTime" :duration="detail.duration" @update="sliderUpdate"></f-slider>
         </view>
         <!-- 视频时长 -->
         <view class="flex align-center justify-center" style="width: 80px;">
-          <text class="font-sm text-white">{{ currentTime | formatVideoTime }}/{{ duration | formatVideoTime }}</text>
+          <text class="font-sm text-white"
+            >{{ detail.currentTime | formatVideoTime }}/{{ detail.duration | formatVideoTime }}</text
+          >
         </view>
         <!-- 全屏 -->
         <f-icon-btn :icon="'\ue800'" size="22" @click="fullScreen"></f-icon-btn>
@@ -183,6 +185,7 @@ const demoList = [
   {
     index: 0,
     title: '优化空数据默认显示',
+    poster: 'https://ss2.bdstatic.com/8_V1bjqh_Q23odCf/pacific/1696374343.jpg',
     list: [
       {
         name: '标清',
@@ -207,6 +210,7 @@ const demoList = [
   {
     index: 0,
     title: '2018年平昌冬',
+    poster: 'https://ss2.bdstatic.com/8_V1bjqh_Q23odCf/pacific/1696374343.jpg',
     list: [
       {
         name: '标清',
@@ -245,24 +249,27 @@ export default {
       videoCtx: null,
       // 播放状态
       isPlay: false,
-      // 当前播放时长
-      currentTime: 0,
-      // 视频总时长
-      duration: 0,
-      // 当前视频源
-      src:
-        'https://douyinzcmcss.oss-cn-shenzhen.aliyuncs.com/%E8%AF%BE%E6%97%B61.%20%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D.mp4',
-      // 当前封面
-      poster: 'https://ss2.bdstatic.com/8_V1bjqh_Q23odCf/pacific/1696374343.jpg',
+      // 当前视频的详细信息
+      detail: {
+        // 当前播放时长
+        currentTime: 0,
+        // 视频总时长
+        duration: 0,
+        // 视频标题
+        title: '',
+        // 当前视频源
+        src: '',
+        // 当前封面
+        poster: '',
+      },
       // 是否全屏
       isFullScreen: false,
+      // 是否锁定播放窗口
       isLock: false,
       // 是否显示视频控制条
       isShowVideoBar: true,
-      // 是否显示提示框
-      isShowToast: false,
-      // 提示内容
-      toast: { type: 'msg', msg: '提示' },
+      // 提示框
+      toast: { isShow: false, type: 'msg', msg: '提示' },
       // 右侧抽屉
       drawer: {
         // 是否显示
@@ -270,16 +277,20 @@ export default {
         // 类型
         type: '',
       },
-      // 点击类型
-      touchType: null,
-      // 点击次数
-      touchCount: 0,
-      oldTouches: {},
-      oldValue: {},
+      // 记录点击事件的信息
+      touches: {
+        // 点击类型
+        type: null,
+        // 点击次数
+        count: 0,
+        // 上一次点击
+        prevTouch: {},
+        prevValue: {},
+      },
       // 播放速度
       rate: {
         default: 1,
-        list: [0.75, 1, 1.25, 1.5, 1.75, 2],
+        list: [0.5, 0.8, 1, 1.25, 1.5, 2],
       },
       // 默认清晰度
       quality: 'HD',
@@ -311,6 +322,9 @@ export default {
       src: "url('https://at.alicdn.com/t/font_1419176_mzo8rsjxi4c.ttf')",
     })
     this.videoList = demoList
+    this.detail.title = demoList[0].title
+    this.detail.poster = demoList[0].poster
+    this.detail.src = demoList[0].list[0].url
   },
   onReady() {
     // 获取播放实例
@@ -321,10 +335,10 @@ export default {
     showToast(options = {}) {
       this.toast.type = options.type || 'msg'
       this.toast.msg = options.msg || '提示'
-      this.isShowToast = true
+      this.toast.isShow = true
       showToastTimer && clearTimeout(showToastTimer)
       showToastTimer = setTimeout(() => {
-        this.isShowToast = false
+        this.toast.isShow = false
         showToastTimer = null
       }, 500)
     },
@@ -343,7 +357,7 @@ export default {
     // 同步播放进度
     sliderUpdate(e) {
       this.showVideoBar()
-      this.currentTime = e
+      this.detail.currentTime = e
       this.videoCtx.seek(e)
     },
     // 锁定视频窗体
@@ -355,9 +369,9 @@ export default {
     changeQuality(item) {
       this.videoCtx.pause()
       if (!item.url) {
-        return uni.showToast({ title: '视频解析异常', icon: 'none' })
+        return uni.showToast({ title: '视频解析异常' })
       }
-      this.src = item.url
+      this.detail.src = item.url
       this.quality = item.quality
       this.showToast({ msg: `已切换为${item.name}` })
       setTimeout(() => {
@@ -369,19 +383,21 @@ export default {
     changeEpisode(item, index) {
       this.videoIndex = index
       this.videoCtx.stop()
-      let list = this.videoList[index].list,
-        i = list.findIndex((v) => v.quality === this.quality)
+      let i = item.list.findIndex((v) => v.quality === this.quality)
       if (i === -1) {
-        // 如果没有高清源,则切换资源列表的第一项
-        if (list.length) {
-          this.src = list[0].src
+        // 如果没有找到匹配的源,则切换资源列表的第一项
+        if (item.list.length) {
+          this.quality = item.list[0].quality
+          this.detail.src = item.list[0].src
+          this.detail.title = item.title
         } else {
-          return uni.showToast({ title: '视频解析异常', icon: 'none' })
+          return uni.showToast({ title: '视频解析异常' })
         }
       } else {
-        this.src = list[i].url
-        uni.showToast({ title: '切换到' + item.title, icon: 'none' })
+        this.detail.src = item.list[i].url
+        this.detail.title = item.title
       }
+      this.showToast({ msg: '切换到' + item.title })
       setTimeout(() => {
         this.videoCtx.playbackRate(this.rate.default)
         this.videoCtx.seek(0)
@@ -431,57 +447,60 @@ export default {
     },
     // 触屏开始
     touchStart(e) {
-      this.oldTouches = e.changedTouches[0]
-      this.oldValue = { currentTime: this.currentTime }
+      this.touches.prevTouch = e.changedTouches[0]
+      this.touches.prevValue = { currentTime: this.detail.currentTime }
     },
     // 触屏滑动过程
     touchMove(e) {
       if (this.isLock) return
       let newTouches = e.changedTouches[0]
-      if (!this.touchType) {
+      if (!this.touches.type) {
         if (this.platform === 'ios' && this.isFullScreen) {
-          this.touchType = Math.abs(newTouches.pageY - this.oldTouches.pageY) > 20 ? 'currentTime' : null
+          this.touches.type = Math.abs(newTouches.pageY - this.touches.prevTouch.pageY) > 20 ? 'currentTime' : null
         } else {
-          this.touchType = Math.abs(newTouches.pageX - this.oldTouches.pageX) > 20 ? 'currentTime' : null
+          this.touches.type = Math.abs(newTouches.pageX - this.touches.prevTouch.pageX) > 20 ? 'currentTime' : null
         }
-        this.touchType === 'currentTime' && this.videoCtx.pause()
-      } else if (this.touchType === 'currentTime') {
+        this.touches.type === 'currentTime' && this.videoCtx.pause()
+      } else if (this.touches.type === 'currentTime') {
         this.showVideoBar()
         let newCurrentTime = null
         if (this.platform === 'ios' && this.isFullScreen) {
           newCurrentTime =
-            ((newTouches.pageY - this.oldTouches.pageY) / 250) * this.duration * 2 + this.oldValue.currentTime * 1
+            ((newTouches.pageY - this.touches.prevTouch.pageY) / 250) * this.detail.duration * 2 +
+            this.touches.prevValue.currentTime * 1
         } else {
           newCurrentTime =
-            ((newTouches.pageX - this.oldTouches.pageX) / 250) * this.duration * 2 + this.oldValue.currentTime * 1
+            ((newTouches.pageX - this.touches.prevTouch.pageX) / 250) * this.detail.duration * 2 +
+            this.touches.prevValue.currentTime * 1
         }
-        this.currentTime = newCurrentTime > this.duration ? this.duration : newCurrentTime < 0 ? 0 : newCurrentTime
+        this.detail.currentTime =
+          newCurrentTime > this.detail.duration ? this.detail.duration : newCurrentTime < 0 ? 0 : newCurrentTime
       }
     },
     // 触屏结束
     touchEnd(e) {
       if (this.isLock) return
-      if (this.touchType === 'currentTime') {
-        this.videoCtx.seek(this.currentTime)
+      if (this.touches.type === 'currentTime') {
+        this.videoCtx.seek(this.detail.currentTime)
         this.videoCtx.play()
       } else {
-        this.touchCount < 2 && this.touchCount++
-        if (this.touchCount > 0) {
+        this.touches.count < 2 && this.touches.count++
+        if (this.touches.count > 0) {
           setTimeout(() => {
             // 单击
-            if (this.touchCount === 1) {
+            if (this.touches.count === 1) {
               this.showOrHideVideoBar()
               this.drawer.isShow = false
             }
             // 双击
-            if (this.touchCount === 2) {
+            if (this.touches.count === 2) {
               this.playOrPause()
             }
-            this.touchCount = 0
+            this.touches.count = 0
           }, 250)
         }
       }
-      this.touchType = null
+      this.touches.type = null
     },
     // 监听全屏切换事件
     fullscreenChange(e) {
@@ -489,8 +508,8 @@ export default {
     },
     // 监听播放进度变化
     timeUpdate(e) {
-      !this.isShowToast && (this.currentTime = parseInt(e.detail.currentTime))
-      this.duration = parseInt(e.detail.duration)
+      this.detail.currentTime = parseInt(e.detail.currentTime)
+      this.detail.duration = parseInt(e.detail.duration)
     },
   },
 }
