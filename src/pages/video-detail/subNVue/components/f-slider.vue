@@ -2,10 +2,10 @@
   <view
     class="flex align-center position-relative"
     style="height: 44px;"
-    @touchstart="touchStart"
-    @touchmove="touchMove"
-    @touchend="touchEnd"
-    @touchcancel="touchCancel"
+    @touchstart.stop="touchStart"
+    @touchmove.stop="touchMove"
+    @touchend.stop="touchEnd"
+    @touchcancels.stop="touchCancel"
   >
     <view class="flex-1 rounded" style="height: 3px; background-color: rgba(255, 255, 255, 0.5);">
       <!-- 已播放的进度,通过 width 控制 -->
@@ -51,14 +51,19 @@ export default {
     },
   },
   created() {
-    this.totalWidth = this.v.windowWidth - 44 - 44 - 80 - 15
     this.left = 44
+    // 全屏
+    if (this.v.isFullScreen) {
+      this.totalWidth = this.v.windowHeight - this.left - 44 * 3 - 80 - 15
+    } else {
+      // 非全屏
+      this.totalWidth = this.v.windowWidth - this.left - 44 - 80 - 15
+    }
     this.active()
   },
   watch: {
     currentTime(newValue, oldValue) {
-      this.active()
-      // !this.moveStatus && this.active()
+      !this.moveStatus && this.active()
     },
   },
   methods: {
@@ -69,22 +74,31 @@ export default {
     touchStart(e) {
       if (!this.duration) return
       this.moveStatus = true
-      this.activeWidth = e.changedTouches[0].screenX - this.left
+      if (this.v.isFullScreen) {
+        this.activeWidth = e.changedTouches[0].screenY - this.left
+      } else {
+        this.activeWidth = e.changedTouches[0].screenX - this.left
+      }
     },
     touchMove(e) {
       if (!this.duration) return
-      let d = e.changedTouches[0].screenX - this.left
+      let d = null
+      if (this.v.isFullScreen) {
+        d = e.changedTouches[0].screenY - this.left
+      } else {
+        d = e.changedTouches[0].screenX - this.left
+      }
       d <= 0
         ? (this.activeWidth = 0)
         : d >= this.totalWidth
         ? (this.activeWidth = this.totalWidth)
         : (this.activeWidth = d)
-      // this.$emit('update', this.current)
+      this.$emit('update', this.current)
     },
     touchEnd(e) {
       if (!this.duration) return
       this.moveStatus = false
-      // this.$emit('update', this.current)
+      this.$emit('update', this.current)
     },
     touchCancel(e) {
       this.touchEnd(e)
