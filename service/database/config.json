@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "vodApp",
+    "password": "GEDiL7LWNNBhnrWf",
+    "database": "vodApp",
+    "host": "192.168.131.101",
+    "dialect": "mysql",
+    "timezone": "+08:00"
+  },
+  "test": {
+    "username": "vodApp",
+    "password": "GEDiL7LWNNBhnrWf",
+    "database": "vodApp",
+    "host": "192.168.131.101",
+    "dialect": "mysql",
+    "timezone": "+08:00"
+  },
+  "production": {
+    "username": "vodApp",
+    "password": "GEDiL7LWNNBhnrWf",
+    "database": "vodApp",
+    "host": "192.168.131.101",
+    "dialect": "mysql",
+    "timezone": "+08:00"
+  }
+}

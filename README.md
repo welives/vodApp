@@ -1,19 +1,5 @@
-# vod-app
+# 仿 bilibili 的练手项目
 
-## Project setup
-```
-npm install
-```
+# client 目录下是前端工程
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+# service 目录下是后端工程
