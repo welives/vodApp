@@ -120,6 +120,97 @@ class UserController extends Controller {
     // 验证通过
     return true
   }
+
+  /**
+   * @description 关注||取消关注 用户
+   * @return {JSON} 返回结果
+   * @memberof UserController
+   */
+  async follow() {
+    const { ctx, app, service } = this
+    const user_id = ctx.authUser.id
+    ctx.validate({
+      follow_id: { type: 'int', required: true, desc: '关注的用户id' },
+    })
+    const { follow_id } = ctx.request.body
+    user_id === follow_id && ctx.apiError({ msg: '不能关注自己' })
+    const follow = await app.model.Follow.findOne({ where: { user_id, follow_id } })
+    // 如果之前已经关注过,则取消关注
+    if (follow) {
+      follow.destroy()
+      return ctx.apiSuccess({ msg: '取消关注' })
+    }
+    // follow && ctx.apiError({ msg: '你已经关注过了' })
+    // 检查目标用户是否存在
+    !(await service.user.exist(follow_id)) && ctx.apiError({ msg: '要关注的用户不存在' })
+    const res = await app.model.Follow.create({ user_id, follow_id })
+
+    return ctx.apiSuccess({ data: res })
+  }
+
+  /**
+   * @description 用户关注列表
+   * @return {JSON} 返回结果
+   * @memberof UserController
+   */
+  async followList() {
+    const { ctx, app } = this
+    const user_id = ctx.authUser.id
+    let res = await ctx.page(
+      app.model.Follow,
+      { user_id },
+      {
+        include: [
+          {
+            model: app.model.User,
+            as: 'user_follow',
+            attributes: ['id', 'username', 'nickname', 'avatar'],
+          },
+        ],
+      },
+    )
+    res = res.map((item) => {
+      return {
+        id: item.user_follow.id,
+        name: item.user_follow.nickname || item.user_follow.username,
+        avatar: item.user_follow.avatar,
+      }
+    })
+
+    return ctx.apiSuccess({ data: res })
+  }
+
+  /**
+   * @description 粉丝列表
+   * @return {JSON} 返回结果
+   * @memberof UserController
+   */
+  async fansList() {
+    const { ctx, app } = this
+    const user_id = ctx.authUser.id
+    let res = await ctx.page(
+      app.model.Follow,
+      { follow_id: user_id },
+      {
+        include: [
+          {
+            model: app.model.User,
+            as: 'user_fans',
+            attributes: ['id', 'username', 'nickname', 'avatar'],
+          },
+        ],
+      },
+    )
+    res = res.map((item) => {
+      return {
+        id: item.user_fans.id,
+        name: item.user_fans.nickname || item.user_fans.username,
+        avatar: item.user_fans.avatar,
+      }
+    })
+
+    return ctx.apiSuccess({ data: res })
+  }
 }
 
 module.exports = UserController

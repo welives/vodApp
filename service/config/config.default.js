@@ -17,20 +17,19 @@ module.exports = (appInfo) => {
 
   // 配置全局中间件
   config.middleware = ['errorHandler', 'auth']
+
   // 配置auth中间件生效的路由
   config.auth = {
-    // ignore: ['/reg', '/login']
     match: [
       '/logout',
       '/video',
       '/video_detail',
       '/vod/sign',
       '/comment',
-      '/fava',
+      '/collect',
       '/user/follow',
-      '/user/unfollow',
       '/user/follows',
-      '/user/fens',
+      '/user/fans',
       '/user/statistics',
       '/upload',
     ],

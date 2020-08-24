@@ -25,12 +25,25 @@ module.exports = (app) => {
       allowNull: false,
       defaultValue: 0,
       comment: '分类id',
+      // 外键关联
+      references: {
+        model: 'category', // 对应表名称
+        key: 'id', // 对应表的主键
+      },
+      onUpdate: 'restrict', // 更新时操作
+      onDelete: 'cascade', // 删除时操作
     },
     user_id: {
       type: INTEGER(10).UNSIGNED,
       allowNull: false,
       defaultValue: 0,
       comment: '用户id',
+      references: {
+        model: 'user',
+        key: 'id',
+      },
+      onUpdate: 'restrict', // 更新时操作
+      onDelete: 'cascade', // 删除时操作
     },
     duration: {
       type: INTEGER,

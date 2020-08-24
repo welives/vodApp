@@ -20,6 +20,7 @@ class VideoDetailController extends Controller {
     const user_id = ctx.authUser.id
     ctx.validate(rules)
     const { title, url, video_id, desc } = ctx.request.body
+    // 检查该用户是否存在待操作的作品
     const video = await app.model.Video.findOne({ where: { id: video_id, user_id } })
     !video && ctx.apiError({ msg: '所属作品不存在' })
     const res = await app.model.VideoDetail.create({ title, url, video_id, desc })
@@ -39,7 +40,7 @@ class VideoDetailController extends Controller {
       ...rules,
     })
     const { title, url, video_id, desc } = ctx.request.body
-    // 检查所属作品是否存在
+    // 检查该用户是否存在待操作的作品
     const video = await app.model.Video.findOne({ where: { id: video_id, user_id } })
     !video && ctx.apiError({ msg: '所属作品不存在' })
     const detail = await app.model.VideoDetail.findOne({ where: { id: ctx.params.id, video_id } })

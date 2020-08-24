@@ -82,6 +82,59 @@ class VideoController extends Controller {
 
     return ctx.apiSuccess({ data: res })
   }
+
+  /**
+   * @description 指定作品的评论列表
+   * @return {JSON} 返回结果
+   * @memberof VideoController
+   */
+  async comment() {
+    const { ctx, app } = this
+    ctx.validate({
+      id: { type: 'int', required: true, desc: '作品id' },
+    })
+    const id = ctx.params.id
+    const res = await app.model.Comment.findAll({
+      where: {
+        video_id: id,
+        reply_id: 0,
+      },
+      include: [
+        // 关联回复
+        {
+          model: app.model.Comment,
+          include: [
+            // 回复发布人
+            {
+              model: app.model.User,
+              as: 'send_user',
+              attributes: ['id', 'username', 'nickname', 'avatar'],
+            },
+            // 回复目标人
+            {
+              model: app.model.User,
+              as: 'reply_user',
+              attributes: ['id', 'username', 'nickname', 'avatar'],
+            },
+          ],
+        },
+        // 一级评论发布人
+        {
+          model: app.model.User,
+          as: 'send_user',
+          attributes: ['id', 'username', 'nickname', 'avatar'],
+        },
+        // 回复目标人
+        {
+          model: app.model.User,
+          as: 'reply_user',
+          attributes: ['id', 'username', 'nickname', 'avatar'],
+        },
+      ],
+    })
+
+    return ctx.apiSuccess({ data: res })
+  }
 }
 
 module.exports = VideoController
