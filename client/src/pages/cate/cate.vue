@@ -38,11 +38,36 @@ export default {
     }
   },
   onLoad() {
-    for (let i = 0; i < 10; i++) {
-      this.list.push({ name: `分类${i + 1}`, cover: `/static/demo/cate/${i + 1}.png` })
-    }
+    this.getData()
   },
-  methods: {},
+  // 监听下拉刷新事件
+  onPullDownRefresh() {
+    this.getData()
+      .then((res) => {
+        uni.stopPullDownRefresh()
+        uni.showToast({
+          title: '刷新成功',
+          icon: 'none',
+        })
+      })
+      .catch((err) => {
+        uni.stopPullDownRefresh()
+      })
+  },
+  methods: {
+    getData() {
+      uni.showLoading({ title: '加载中...' })
+      return this.$req
+        .post('/category')
+        .then((res) => {
+          uni.hideLoading()
+          this.list = res
+        })
+        .catch((err) => {
+          uni.hideLoading()
+        })
+    },
+  },
 }
 </script>
 

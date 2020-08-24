@@ -30,6 +30,7 @@
     {
       "path": "pages/cate/cate",
       "style": {
+        "enablePullDownRefresh": true,
         "app-plus": {
           "titleNView": {
             "searchInput": {

@@ -1,7 +1,7 @@
 <template>
   <view class="icon-cate">
-    <image class="bg-light" :src="item.cover" mode="" style="width: 70rpx; height: 70rpx;"></image>
-    <text class="text-muted font mt-1">{{ item.name }}</text>
+    <image class="bg-light rounded" :src="item.icon" mode="" style="width: 70rpx; height: 70rpx;"></image>
+    <text class="text-muted font mt-1">{{ item.title }}</text>
   </view>
 </template>
 

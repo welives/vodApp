@@ -38,7 +38,7 @@ module.exports = (app) => {
       set(val) {
         const hmac = crypto.createHash('sha256', app.config.crypto.secret)
         hmac.update(val)
-        // this.setDataValue() 设置原始值
+        // this.setDataValue('field') 设置原始值
         this.setDataValue('password', hmac.digest('hex'))
       },
     },

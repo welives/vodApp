@@ -200,7 +200,7 @@
     "semi": ["error", "never"], // 要求或禁止使用分号代替 ASI
     "semi-spacing": ["error", { "before": false, "after": true }], // 强制分号前后有空格
     "space-before-blocks": ["error", "always"], // 要求或禁止语句块之前的空格
-    "space-before-function-paren": ["error", { "anonymous": "never", "named": "never" }], // 要求或禁止函数圆括号之前有一个空格
+    "space-before-function-paren": ["error", { "anonymous": "always", "named": "never" }], // 要求或禁止函数圆括号之前有一个空格
     "space-in-parens": ["error", "never"], // 禁止或强制圆括号内的空格
     "space-infix-ops": "error", // 要求中缀操作符周围有空格
     "space-unary-ops": ["error", { "words": true, "nonwords": false }], // 要求或禁止在一元操作符之前或之后存在空格
