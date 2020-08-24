@@ -1,6 +1,6 @@
 <template>
   <view
-    class="py-3 rounded-circle bg-main flex align-center justify-center text-white"
+    class="py-2 rounded-circle bg-main flex align-center justify-center text-white"
     hover-class="bg-main-hover"
     @click="$emit('click')"
   >

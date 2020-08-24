@@ -145,7 +145,7 @@
       <view :style="`height:${statusBarHeight}px;`"></view>
       <view class="flex align-center" style="height: 44px;">
         <!-- 顶部返回按钮 -->
-        <f-icon-btn :icon="'\ue612'" @click="back"></f-icon-btn>
+        <f-icon-btn :icon="'\ue612'" @click="back()"></f-icon-btn>
       </view>
     </view>
     <!-- 非全屏时的底部控制条 -->

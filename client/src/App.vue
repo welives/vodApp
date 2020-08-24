@@ -2,6 +2,7 @@
 export default {
   onLaunch: function() {
     console.log('App Launch')
+    this.$store.dispatch('user/initUser')
   },
   onShow: function() {
     console.log('App Show')

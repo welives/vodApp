@@ -60,8 +60,8 @@ module.exports = {
         defaultValue: '',
         comment: '个性签名',
       },
-      created_time: DATE,
-      updated_time: DATE,
+      created_at: DATE,
+      updated_at: DATE,
     })
   },
 

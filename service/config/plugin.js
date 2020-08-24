@@ -17,4 +17,14 @@ module.exports = {
     enable: true,
     package: 'egg-valparams',
   },
+  // JWT
+  jwt: {
+    enable: true,
+    package: 'egg-jwt',
+  },
+  // redis
+  redis: {
+    enable: true,
+    package: 'egg-redis',
+  },
 }

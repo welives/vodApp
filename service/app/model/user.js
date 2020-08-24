@@ -34,9 +34,11 @@ module.exports = (app) => {
       allowNull: false,
       defaultValue: '',
       comment: '密码',
+      // 修改器
       set(val) {
         const hmac = crypto.createHash('sha256', app.config.crypto.secret)
         hmac.update(val)
+        // this.setDataValue() 设置原始值
         this.setDataValue('password', hmac.digest('hex'))
       },
     },
@@ -65,8 +67,8 @@ module.exports = (app) => {
       defaultValue: '',
       comment: '个性签名',
     },
-    created_time: DATE,
-    updated_time: DATE,
+    created_at: DATE,
+    updated_at: DATE,
   })
 
   return User

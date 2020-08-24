@@ -1,20 +1,31 @@
 <template>
   <view>
-    <view class="p-3 flex align-center">
-      <navigator url="../user-space/user-space">
+    <navigator v-if="!user" url="../login/login">
+      <view class="p-3 flex align-center">
         <image
           class="rounded-circle flex-shrink"
           src="/static/demo/6.jpg"
-          mode=""
           style="width: 120rpx; height: 120rpx;"
         ></image>
-      </navigator>
+        <view class="pl-3 flex flex-column flex-1">
+          <view class="font-md text-main">
+            请先登入
+          </view>
+        </view>
+      </view>
+    </navigator>
+    <view v-else class="p-3 flex align-center">
+      <image
+        class="rounded-circle flex-shrink"
+        :src="user.avatar || '/static/demo/6.jpg'"
+        style="width: 120rpx; height: 120rpx;"
+      ></image>
       <view class="pl-3 flex flex-column flex-1">
         <view class="font-md text-dark">
-          jandan
-          <text class="font-sm text-muted ml-3">广西 南宁</text>
+          {{ user.nickname || user.username }}
+          <text class="font-sm text-light-muted ml-3">{{ user.sex }}</text>
         </view>
-        <text class="font-sm text-muted">菜鸡前端</text>
+        <text class="font-sm text-light-muted">{{ user.desc || '这个人很懒,什么都没写' }}</text>
       </view>
     </view>
     <view class="f-divider"></view>
@@ -69,6 +80,7 @@
 import fListItem from '@/components/common/f-list-item'
 import mainBigButton from '@/components/common/main-big-button'
 import fPopup from '@/components/common/f-popup'
+import { mapState } from 'vuex'
 export default {
   components: {
     fListItem,
@@ -77,6 +89,18 @@ export default {
   },
   data() {
     return {}
+  },
+  computed: {
+    ...mapState({
+      user: (state) => state.user.user,
+    }),
+  },
+  onNavigationBarButtonTap(e) {
+    if (e.index === 0) {
+      uni.navigateTo({
+        url: '../user-set/user-set',
+      })
+    }
   },
   methods: {
     add() {

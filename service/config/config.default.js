@@ -15,8 +15,25 @@ module.exports = (appInfo) => {
   // use for cookie sign key, should change to your own and keep security
   config.keys = appInfo.name + '_1597161537435_8722'
 
-  // add your middleware config here
-  config.middleware = ['errorHandler']
+  // 配置全局中间件
+  config.middleware = ['errorHandler', 'auth']
+  // 配置auth中间件生效的路由
+  config.auth = {
+    // ignore: ['/reg', '/login']
+    match: [
+      '/logout',
+      '/video',
+      '/video_detail',
+      '/vod/sign',
+      '/comment',
+      '/fava',
+      '/user/follow',
+      '/user/unfollow',
+      '/user/follows',
+      '/user/fens',
+      '/user/statistics',
+    ],
+  }
 
   // add your user config here
   const userConfig = {
@@ -41,11 +58,12 @@ module.exports = (appInfo) => {
   // 数据库配置
   config.sequelize = {
     dialect: 'mysql',
-    host: '192.168.131.101',
-    username: 'vodApp',
-    password: 'GEDiL7LWNNBhnrWf',
+    host: '127.0.0.1',
+    username: 'root',
+    password: 'root',
     port: 3306,
     database: 'vodApp',
+    // 中国时区
     timezone: '+08:00',
     define: {
       // 取消数据表名复数
@@ -54,9 +72,9 @@ module.exports = (appInfo) => {
       timestamps: true,
       // 字段生成软删除时间戳 deleted_at
       // paranoid: true,
-      createdAt: 'created_time',
-      updatedAt: 'updated_time',
-      // deletedAt: 'deleted_time',
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+      // deletedAt: 'deleted_at',
       // 所有驼峰命名格式化
       underscored: true,
     },
@@ -67,9 +85,25 @@ module.exports = (appInfo) => {
     locale: 'zh-cn',
     throwError: true,
   }
-  // 加密包配置
+  // 数据加密包配置
   config.crypto = {
     secret: '6pe2t$Po@T*_U@Whm%zsSdFhAqvhP6kA',
+  }
+
+  // JWT
+  config.jwt = {
+    expire: 3600 * 24 * 7,
+    secret: '3HwZtE@6xGNLUpVHJGF#NZj*5teCwMpX',
+  }
+
+  // redis存储配置
+  config.redis = {
+    client: {
+      port: 6379, // Redis port
+      host: '127.0.0.1', // Redis host
+      password: '',
+      db: 0,
+    },
   }
 
   return {

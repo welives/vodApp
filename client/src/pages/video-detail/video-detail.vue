@@ -1,6 +1,6 @@
 <template>
   <view style="line-height: 0;">
-    <!-- #ifndef APP-PLUS -->
+    <!-- #ifndef APP-PLUS-NVUE -->
     <video :src="detail.src" :poster="detail.poster" style="height: 225px; width: 100%;" controls></video>
     <!-- #endif -->
     <scroll-view scroll-y :style="`height:${scrollHeight}px`">
