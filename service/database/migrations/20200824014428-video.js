@@ -15,13 +15,13 @@ module.exports = {
           type: STRING(100),
           allowNull: false,
           defaultValue: '',
-          comment: '视频标题',
+          comment: '作品标题',
         },
         cover: {
           type: STRING,
           allowNull: false,
           defaultValue: '',
-          comment: '视频封面',
+          comment: '作品封面',
         },
         category_id: {
           type: INTEGER(10).UNSIGNED,
@@ -58,7 +58,7 @@ module.exports = {
           type: TEXT,
           allowNull: false,
           defaultValue: '',
-          comment: '视频描述',
+          comment: '作品简介',
         },
         play_count: {
           type: INTEGER,

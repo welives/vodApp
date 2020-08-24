@@ -52,4 +52,19 @@ module.exports = {
   checkToken(token) {
     return this.app.jwt.verify(token, this.app.config.jwt.secret)
   },
+
+  /**
+   * @description 分页处理
+   * @param {Object} model 模型
+   * @param {Object} [where={}] 查询条件
+   * @param {Object} [options={}] 更多参数,如排序
+   */
+  async page(model, where = {}, options = {}) {
+    const page = this.params.page ? parseInt(this.params.page) : 1
+    const limit = this.query.limit ? parseInt(this.query.limit) : 10
+    const offset = (page - 1) * limit
+    options.order = options.order || [['id', 'DESC']]
+
+    return await model.findAll({ where, offset, limit, ...options })
+  },
 }

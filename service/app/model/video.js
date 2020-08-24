@@ -12,13 +12,13 @@ module.exports = (app) => {
       type: STRING(100),
       allowNull: false,
       defaultValue: '',
-      comment: '视频标题',
+      comment: '作品标题',
     },
     cover: {
       type: STRING,
       allowNull: false,
       defaultValue: '',
-      comment: '视频封面',
+      comment: '作品封面',
     },
     category_id: {
       type: INTEGER(10).UNSIGNED,
@@ -42,7 +42,7 @@ module.exports = (app) => {
       type: TEXT,
       allowNull: false,
       defaultValue: '',
-      comment: '视频描述',
+      comment: '作品简介',
     },
     play_count: {
       type: INTEGER,
@@ -69,9 +69,9 @@ module.exports = (app) => {
 
   // 关联关系
   Video.associate = function (models) {
-    // 关联作者,一个视频对应一个作者,即一对一,反过来则是一对多
+    // 关联作者,一个作品对应一个作者,即一对一,反过来则是一对多
     Video.belongsTo(app.model.User)
-    // 关联子视频,一个作品可以有若干个章节,即一对多
+    // 关联子视频,一个作品可以有若干个章节的视频,即一对多
     Video.hasMany(app.model.VideoDetail)
   }
 

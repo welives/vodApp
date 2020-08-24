@@ -32,6 +32,7 @@ module.exports = (appInfo) => {
       '/user/follows',
       '/user/fens',
       '/user/statistics',
+      '/upload',
     ],
   }
 
@@ -47,6 +48,13 @@ module.exports = (appInfo) => {
     },
     // 跨域白名单
     domainWhiteList: [],
+  }
+
+  // 文件上传配置
+  config.multipart = {
+    fileSize: '50mb',
+    mode: 'stream',
+    fileExtensions: ['.xls', '.txt', '.jpg', '.png', '.gif', '.jpeg'],
   }
 
   // 跨域配置

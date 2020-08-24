@@ -21,7 +21,7 @@ module.exports = {
           type: INTEGER(10).UNSIGNED,
           allowNull: false,
           defaultValue: 0,
-          comment: '视频id',
+          comment: '所属作品id',
           references: {
             model: 'video',
             key: 'id',

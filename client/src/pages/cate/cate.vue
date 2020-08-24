@@ -58,7 +58,7 @@ export default {
     getData() {
       uni.showLoading({ title: '加载中...' })
       return this.$req
-        .post('/category')
+        .get('/category')
         .then((res) => {
           uni.hideLoading()
           this.list = res

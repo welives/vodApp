@@ -12,13 +12,13 @@ module.exports = (app) => {
       type: STRING(100),
       allowNull: false,
       defaultValue: '',
-      comment: '子标题',
+      comment: '视频标题',
     },
     video_id: {
       type: INTEGER(10).UNSIGNED,
       allowNull: false,
       defaultValue: 0,
-      comment: '视频id',
+      comment: '所属作品id',
       references: {
         model: 'video',
         key: 'id',
@@ -36,7 +36,7 @@ module.exports = (app) => {
       type: TEXT,
       allowNull: false,
       defaultValue: '',
-      comment: '子描述',
+      comment: '视频简介',
     },
     created_at: DATE,
     updated_at: DATE,
@@ -44,7 +44,7 @@ module.exports = (app) => {
 
   // 关联关系
   VideoDetail.associate = function (models) {
-    // 关联视频
+    // 关联作品
     VideoDetail.belongsTo(app.model.Video)
   }
 
