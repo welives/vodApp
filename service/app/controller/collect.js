@@ -27,9 +27,8 @@ class CollectController extends Controller {
     }
     const video = await app.model.Video.findOne({ where: { id: video_id } })
     !video && ctx.apiError({ msg: '视频不存在' })
-    await app.model.Collect.create({ user_id, video_id })
 
-    ctx.apiSuccess({ msg: '收藏成功' })
+    return (await app.model.Collect.create({ user_id, video_id })) && ctx.apiSuccess({ msg: '收藏成功' })
   }
 
   /**

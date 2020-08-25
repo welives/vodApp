@@ -140,12 +140,10 @@ class UserController extends Controller {
       follow.destroy()
       return ctx.apiSuccess({ msg: '取消关注' })
     }
-    // follow && ctx.apiError({ msg: '你已经关注过了' })
     // 检查目标用户是否存在
     !(await service.user.exist(follow_id)) && ctx.apiError({ msg: '要关注的用户不存在' })
-    const res = await app.model.Follow.create({ user_id, follow_id })
 
-    return ctx.apiSuccess({ data: res })
+    return (await app.model.Follow.create({ user_id, follow_id })) && ctx.apiSuccess({ msg: '关注成功' })
   }
 
   /**
@@ -210,6 +208,41 @@ class UserController extends Controller {
     })
 
     return ctx.apiSuccess({ data: res })
+  }
+
+  /**
+   * @description 统计用户相关数据
+   * @return {JSON} 返回结果
+   * @memberof UserController
+   */
+  async statistics() {
+    const { ctx, service } = this
+    const user_id = ctx.authUser.id
+    const followCount = await service.user.getFollowCount(user_id)
+    const fansCount = await service.user.getFansCount(user_id)
+    const videoCount = await service.user.getVideoCount(user_id)
+
+    return ctx.apiSuccess({ data: { followCount, fansCount, videoCount } })
+  }
+
+  /**
+   * @description 获取用户相关信息
+   * @return {JSON} 返回结果
+   * @memberof UserController
+   */
+  async userInfo() {
+    const { ctx, service } = this
+    ctx.validate({ user_id: { type: 'int', required: true, desc: '用户id' } })
+    const { user_id } = ctx.query
+    const res = await service.user.getUserInfo(user_id)
+    const followCount = res ? await service.user.getFollowCount(user_id) : 0
+    const fansCount = res ? await service.user.getFansCount(user_id) : 0
+    let isFollow = false
+    if (ctx.authUser && ctx.authUser.id !== user_id) {
+      isFollow = await service.user.isFollow(ctx.authUser.id, user_id)
+    }
+
+    return ctx.apiSuccess({ data: { user: res, followCount, fansCount, isFollow } })
   }
 }
 

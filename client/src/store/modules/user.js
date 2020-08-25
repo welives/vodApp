@@ -24,6 +24,7 @@ export default {
       commit('SET_USER', payload)
       commit('SET_TOKEN', payload.token)
       uni.setStorageSync('user', JSON.stringify(payload))
+      uni.setStorageSync('token', JSON.stringify(payload.token))
     },
 
     /**
@@ -35,6 +36,7 @@ export default {
       commit('SET_USER', null)
       commit('SET_TOKEN', null)
       uni.removeStorageSync('user')
+      uni.removeStorageSync('token')
     },
 
     /**

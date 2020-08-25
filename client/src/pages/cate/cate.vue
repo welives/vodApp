@@ -14,12 +14,18 @@
 
     <card title="热门分类" :showRefresh="false">
       <scroll-view scroll-x class="scroll-row">
-        <icon-cate v-for="(item, index) in list" :key="index" :item="item" :index="index"></icon-cate>
+        <icon-cate
+          v-for="(item, index) in list"
+          :key="index"
+          :item="item"
+          :index="index"
+          @click="open(item)"
+        ></icon-cate>
       </scroll-view>
     </card>
     <view class="f-divider"></view>
     <card title="全部分类" :showRefresh="false">
-      <icon-cate v-for="(item, index) in list" :key="index" :item="item" :index="index"></icon-cate>
+      <icon-cate v-for="(item, index) in list" :key="index" :item="item" :index="index" @click="open(item)"></icon-cate>
     </card>
   </view>
 </template>
@@ -66,6 +72,11 @@ export default {
         .catch((err) => {
           uni.hideLoading()
         })
+    },
+    open(item) {
+      uni.navigateTo({
+        url: `../list/list?id=${item.id}&title=${item.title}`,
+      })
     },
   },
 }

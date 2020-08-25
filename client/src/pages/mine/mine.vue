@@ -32,12 +32,12 @@
     <f-list-item
       icon="iconshipin"
       title="我的作品"
-      rightText="26个"
+      :rightText="videoCount + '个'"
       :showRightIcon="false"
       @click="navigateTo('user-video')"
     ></f-list-item>
     <f-list-item icon="iconshoucang1" title="收藏" @click="navigateTo('user-collect')"></f-list-item>
-    <f-list-item icon="iconguanzhu" title="关注" rightText="365"></f-list-item>
+    <f-list-item icon="iconguanzhu" title="关注" :rightText="followCount"></f-list-item>
     <f-list-item icon="iconlishi" title="历史记录"></f-list-item>
     <view class="f-divider"></view>
     <view class="px-3 py-2">
@@ -60,6 +60,7 @@
             <text
               class="iconfont icon918caidan_wenjian bg-main text-white rounded-circle flex align-center justify-center"
               style="width: 80rpx; height: 80rpx;"
+              @click="navigateTo('create')"
             ></text>
             <text class="font mt-1 text-muted">连载</text>
           </view>
@@ -88,12 +89,22 @@ export default {
     fPopup,
   },
   data() {
-    return {}
+    return {
+      followCount: 0,
+      fansCount: 0,
+      videoCount: 0,
+    }
   },
   computed: {
     ...mapState({
       user: (state) => state.user.user,
     }),
+  },
+  onShow() {
+    this.$req.get('/user/statistics', { token: true, noJump: true, toast: false }).then((res) => {
+      this.followCount = res.followCount
+      this.videoCount = res.videoCount
+    })
   },
   onNavigationBarButtonTap(e) {
     if (e.index === 0) {

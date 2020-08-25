@@ -10,6 +10,41 @@ const rules = {
 }
 class VideoController extends Controller {
   /**
+   * @description 指定用户的作品列表
+   * @return {JSON} 返回结果
+   * @memberof VideoController
+   */
+  async index() {
+    const { ctx, app } = this
+    ctx.validate({
+      user_id: { type: 'int', required: true, desc: '用户id' },
+      page: { type: 'int', required: true, desc: '页码' },
+      limit: { type: 'int', required: false, desc: '每页显示条数' },
+    })
+    const { user_id } = ctx.query
+    const res = await ctx.page(app.model.Video, { user_id })
+
+    return ctx.apiSuccess({ data: res })
+  }
+
+  /**
+   * @description 指定分类下的作品列表
+   * @return {JSON} 返回结果
+   * @memberof VideoController
+   */
+  async list() {
+    const { ctx, app } = this
+    ctx.validate({
+      category_id: { type: 'int', required: true, desc: '分类id' },
+      page: { type: 'int', required: true, desc: '页码' },
+      limit: { type: 'int', required: false, desc: '每页显示条数' },
+    })
+    const res = await ctx.page(app.model.Video, { category_id: ctx.params.category_id })
+
+    return ctx.apiSuccess({ data: res })
+  }
+
+  /**
    * @description 添加作品
    * @return {JSON} 返回结果
    * @memberof VideoController
@@ -22,24 +57,6 @@ class VideoController extends Controller {
     const video = await app.model.Video.create({ title, cover, category_id, desc, user_id })
 
     return ctx.apiSuccess(video)
-  }
-
-  /**
-   * @description 指定用户的作品列表
-   * @return {JSON} 返回结果
-   * @memberof VideoController
-   */
-  async index() {
-    const { ctx, app } = this
-    ctx.validate({
-      user_id: { type: 'int', required: true, desc: '用户id' },
-      page: { type: 'int', required: true, desc: '页码' },
-      limit: { type: 'int', required: false, desc: '每页显示条数' },
-    })
-    const user_id = ctx.query.user_id
-    const res = await ctx.page(app.model.Video, { user_id })
-
-    return ctx.apiSuccess({ data: res })
   }
 
   /**
@@ -68,19 +85,71 @@ class VideoController extends Controller {
   }
 
   /**
-   * @description 指定分类下的作品列表
+   * @description 删除作品
    * @return {JSON} 返回结果
    * @memberof VideoController
    */
-  async list() {
+  async destroy() {
     const { ctx, app } = this
-    ctx.validate({
-      page: { type: 'int', required: true, desc: '页码' },
-      category_id: { type: 'int', required: true, desc: '分类id' },
-    })
-    const res = await ctx.page(app.model.Video, { category_id: ctx.params.category_id })
+    const user_id = ctx.authUser.id
+    ctx.validate({ id: { type: 'int', required: true, desc: '作品id' } })
+    const { id } = ctx.params
+    const video = await app.model.Video.findOne({ where: { id, user_id } })
+    !video && ctx.apiError({ msg: '该记录不存在' })
+    await video.destroy()
 
-    return ctx.apiSuccess({ data: res })
+    return ctx.apiSuccess()
+  }
+
+  /**
+   * @description 作品详情
+   * @return {JSON} 返回结果
+   * @memberof VideoController
+   */
+  async read() {
+    const { ctx, app, service } = this
+    ctx.validate({ id: { type: 'int', required: true, desc: '作品id' } })
+    const { id } = ctx.params
+    const video = await app.model.Video.findOne({
+      where: { id },
+      include: [
+        {
+          model: app.model.VideoDetail,
+        },
+        {
+          model: app.model.User,
+          attributes: ['id', 'username', 'nickname', 'avatar'],
+        },
+      ],
+    })
+    const hotVideos = await this.hot()
+    let isCollect = false
+    let isFollow = false
+    if (ctx.authUser) {
+      // 强制转换成 boolean
+      isCollect = !!(await app.model.Collect.findOne({ where: { user_id: ctx.authUser.id, video_id: video.id } }))
+      if (ctx.authUser.id !== video.user_id) {
+        isFollow = await service.user.isFollow(ctx.authUser.id, video.user_id)
+      }
+    }
+
+    return ctx.apiSuccess({ data: { video, isCollect, isFollow, hotVideos } })
+  }
+
+  /**
+   * @description 获取热门视频
+   * @return {JSON} 返回结果
+   * @memberof VideoController
+   */
+  async hot() {
+    const { app } = this
+    return await app.model.Video.findAll({
+      order: [
+        ['id', 'DESC'],
+        ['play_count', 'DESC'],
+      ],
+      limit: 5,
+    })
   }
 
   /**
@@ -93,7 +162,7 @@ class VideoController extends Controller {
     ctx.validate({
       id: { type: 'int', required: true, desc: '作品id' },
     })
-    const id = ctx.params.id
+    const { id } = ctx.params
     const res = await app.model.Comment.findAll({
       where: {
         video_id: id,

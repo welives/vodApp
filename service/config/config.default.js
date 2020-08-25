@@ -16,7 +16,7 @@ module.exports = (appInfo) => {
   config.keys = appInfo.name + '_1597161537435_8722'
 
   // 配置全局中间件
-  config.middleware = ['errorHandler', 'auth']
+  config.middleware = ['errorHandler', 'auth', 'getUser']
 
   // 配置auth中间件生效的路由
   config.auth = {

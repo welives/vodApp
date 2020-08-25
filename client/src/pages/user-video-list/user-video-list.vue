@@ -1,25 +1,23 @@
 <template>
-  <view style="min-height: 100vh;">
+  <view>
     <block v-for="(item, index) in list" :key="index">
       <!-- 不处于编辑状态 -->
       <view v-if="!item.isEdit" class="bg-white">
-        <video :src="item.video" style="height: 350rpx; width: 100%;" controls></video>
+        <video :src="item.url" style="height: 350rpx; width: 100%;" controls></video>
         <form-item label="标题">
           <text class="font">{{ item.title }}</text>
         </form-item>
         <view class="flex text-center" style="height: 100rpx;">
           <view class="flex-1" hover-class="bg-light" style="line-height: 100rpx;" @click="changeEdit(item)">修改</view>
-          <view class="flex-1" hover-class="bg-light" style="line-height: 100rpx;" @click="deleteItem(index)"
-            >删除</view
-          >
+          <view class="flex-1" hover-class="bg-light" style="line-height: 100rpx;" @click="deleteItem(item)">删除</view>
         </view>
       </view>
       <!-- 处于编辑状态 -->
       <view v-else class="bg-white">
         <view class="bg-light position-relative" hover-class="bg-hover-light" style="height: 350rpx;">
-          <video v-if="item.video" :src="item.video" style="height: 350rpx; width: 100%;" controls></video>
+          <video v-if="item.url" :src="item.url" style="height: 350rpx; width: 100%;" controls></video>
           <view
-            v-if="!item.video"
+            v-if="!item.url"
             class="flex flex-column align-center justify-center position-absolute left-0 right-0 top-0 bottom-0"
             style="background-color: rgba(255,255,255,0.2);"
             @click="upload(item)"
@@ -29,7 +27,7 @@
           </view>
         </view>
         <view
-          v-if="item.video"
+          v-if="item.url"
           class="flex align-center justify-center"
           hover-class="bg-light"
           style="height: 100rpx;"
@@ -62,7 +60,7 @@
             >完成</view
           >
           <view
-            v-if="item.video"
+            v-if="item.url"
             class="flex-1"
             hover-class="bg-light"
             style="line-height: 100rpx;"
@@ -98,15 +96,8 @@ export default {
   },
   data() {
     return {
-      list: [
-        {
-          video:
-            'https://douyinzcmcss.oss-cn-shenzhen.aliyuncs.com/%E8%AF%BE%E6%97%B61.%20%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D.mp4',
-          title: '测试视频',
-          desc: '测试',
-          isEdit: false,
-        },
-      ],
+      id: 0,
+      list: [],
     }
   },
   computed: {
@@ -114,28 +105,81 @@ export default {
       return this.list.filter((item) => item.isEdit).length
     },
   },
+  onLoad(e) {
+    if (!e.id) {
+      uni.navigateBack({
+        delta: 1,
+      })
+      uni.showToast({
+        title: '非法参数',
+        icon: 'none',
+      })
+    }
+    e.id && (this.id = e.id)
+    this.getData()
+  },
   methods: {
+    getData() {
+      let url = `/video_detail/${this.id}`
+      uni.showLoading({ title: '加载中...' })
+      return this.$req.get(url, { token: true }).then((res) => {
+        uni.hideLoading()
+        this.list = res.map((item) => {
+          item.isEdit = false
+          return item
+        })
+      })
+    },
     // 提交到后端
     submit(item) {
-      item.isEdit = false
+      let url = item.id ? `/video_detail/${item.id}` : `/video_detail`
+      let msg = item.id ? '修改' : '创建'
+      item.url =
+        'https://douyinzcmcss.oss-cn-shenzhen.aliyuncs.com/%E8%AF%BE%E6%97%B61.%20%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D.mp4'
+      this.$req
+        .post(
+          url,
+          {
+            title: item.title,
+            url: item.url,
+            video_id: this.id,
+            desc: item.desc,
+          },
+          { token: true },
+        )
+        .then((res) => {
+          item.isEdit = false
+          uni.showToast({
+            title: msg + '成功',
+            icon: 'none',
+          })
+          this.getData()
+        })
     },
     changeEdit(item) {
       item.isEdit = !item.isEdit
     },
     // 删除
-    deleteItem(index) {
+    deleteItem(item) {
       uni.showModal({
         content: '是否要删除该视频？',
         success: (res) => {
           if (res.confirm) {
-            this.list.splice(index, 1)
+            this.$req.get(`/video_detail/destroy/${item.id}`, { token: true }).then((res) => {
+              uni.showToast({
+                title: '删除成功',
+                icon: 'none',
+              })
+              let index = this.list.findIndex((v) => v.id === item.id)
+              this.list.splice(index, 1)
+            })
           }
         },
       })
     },
     // 添加章节
     add() {
-      this.list.push({ video: '', title: '', desc: '', isEdit: true })
+      this.list.push({ url: '', title: '', desc: '', isEdit: true })
     },
     // 上传视频
     upload(item) {
@@ -143,7 +187,7 @@ export default {
         count: 1,
         sourceType: ['camera', 'album'],
         success: (res) => {
-          item.video = res.tempFilePath
+          item.url = res.tempFilePath
         },
       })
     },

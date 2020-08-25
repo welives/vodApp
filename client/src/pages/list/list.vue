@@ -1,13 +1,7 @@
 <template>
   <view>
     <view class="px-1" v-for="(item, index) in list" :key="index">
-      <media-list :item="item" :index="index" @click="detail(item)"></media-list>
-      <view class="flex text-center" style="height: 80rpx;">
-        <view class="flex-1 my-auto" hover-class="bg-light" @click="detail(item)">详情</view>
-        <view class="flex-1 my-auto" hover-class="bg-light" @click="edit(item)">修改</view>
-        <view class="flex-1 my-auto" hover-class="bg-light" @click="del(item)">删除</view>
-      </view>
-      <view class="f-divider"></view>
+      <media-list :item="item" :index="index"></media-list>
     </view>
     <!-- 无数据提示 -->
     <view v-if="list.length === 0" class="flex align-center justify-center text-light-muted" style="height: 200rpx;"
@@ -25,7 +19,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import common from '@/common/mixins/common'
 import mediaList from '@/components/common/media-list'
 export default {
@@ -35,17 +28,18 @@ export default {
   mixins: [common],
   data() {
     return {
+      category_id: 0,
       page: 1,
       list: [],
     }
   },
-  computed: {
-    ...mapState({
-      user_id: (state) => state.user.user.id,
-    }),
-  },
   // 页面加载
-  onShow() {
+  onLoad(e) {
+    e.id && (this.category_id = e.id)
+    e.title &&
+      uni.setNavigationBarTitle({
+        title: e.title,
+      })
     this.getData()
   },
   // 监听下拉刷新事件
@@ -77,7 +71,7 @@ export default {
   },
   methods: {
     getData() {
-      let url = `/video_list/${this.page}?user_id=${this.user_id}`
+      let url = `/category/${this.category_id}/video/${this.page}`
       uni.showLoading({ title: '加载中...' })
       return this.$req
         .get(url)
@@ -97,33 +91,6 @@ export default {
           }
           this.load.type = 0
         })
-    },
-    detail(item) {
-      uni.navigateTo({
-        url: '../user-video-list/user-video-list?id=' + item.id,
-      })
-    },
-    edit(item) {
-      uni.navigateTo({
-        url: '../create/create?title=修改作品&data=' + encodeURIComponent(JSON.stringify(item)),
-      })
-    },
-    del(item) {
-      uni.showModal({
-        content: '是否要删除该作品？',
-        success: (res) => {
-          if (res.confirm) {
-            this.$req.get(`/video/destroy/${item.id}`, { token: true }).then((res) => {
-              uni.showToast({
-                title: '删除成功',
-                icon: 'none',
-              })
-              let index = this.list.findIndex((v) => v.id === item.id)
-              this.list.splice(index, 1)
-            })
-          }
-        },
-      })
     },
   },
 }

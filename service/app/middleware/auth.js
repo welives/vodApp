@@ -20,6 +20,7 @@ module.exports = (option, app) => {
     user = await app.model.User.findByPk(user.id)
     !user && ctx.apiError({ code: 10000, msg: '用户不存在' })
     // 5. 把 user 信息挂载到全局ctx上
+    delete user.password
     ctx.authUser = user
     await next()
   }

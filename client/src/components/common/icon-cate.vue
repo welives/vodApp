@@ -1,5 +1,5 @@
 <template>
-  <view class="icon-cate">
+  <view class="icon-cate" @click="$emit('click')">
     <image class="bg-light rounded" :src="item.icon" mode="" style="width: 70rpx; height: 70rpx;"></image>
     <text class="text-muted font mt-1">{{ item.title }}</text>
   </view>

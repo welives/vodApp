@@ -27,7 +27,7 @@
           placeholder="请选择分类"
           placeholder-class="text-light-muted"
           disabled
-          v-model="form.category"
+          v-model="categoryTitle"
         />
       </form-item>
     </picker>
@@ -57,26 +57,71 @@ export default {
   },
   data() {
     return {
-      form: { cover: '', title: '', category: '', desc: '' },
-      range: ['分类1', '分类2', '分类3'],
+      id: 0,
+      form: { cover: '', title: '', category_id: 0, desc: '' },
+      category: [],
+      range: [],
     }
   },
+  computed: {
+    categoryTitle() {
+      let index = this.category.findIndex((item) => item.id === this.form.category_id)
+      if (index === -1) return ''
+      return this.category[index].title
+    },
+  },
+  onLoad(e) {
+    e.title &&
+      uni.setNavigationBarTitle({
+        title: e.title,
+      })
+    if (e.data) {
+      let item = JSON.parse(decodeURIComponent(e.data))
+      this.id = item.id
+      this.form = { cover: item.cover, title: item.title, category_id: item.category_id, desc: item.desc }
+    }
+    this.$req.get('/category').then((res) => {
+      this.category = res
+      this.range = res.map((item) => item.title)
+    })
+  },
+  onNavigationBarButtonTap() {
+    this.submit()
+  },
   methods: {
+    // 上传封面
     upload() {
       uni.chooseImage({
         count: 1, //默认9
         sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
         success: (res) => {
-          this.form.cover = res.tempFilePaths[0]
+          uni.showLoading({ title: '上传中...' })
+          this.$req.upload('/upload', { filePath: res.tempFilePaths[0] }).then((res) => {
+            uni.hideLoading()
+            this.form.cover = res.url
+            uni.showToast({
+              title: '上传成功',
+              icon: 'none',
+            })
+          })
         },
       })
     },
+    // 选择分类
     change(e) {
-      console.log(e)
-      this.form.category = this.range[e.detail.value]
+      this.form.category_id = this.category[e.detail.value].id
     },
+    // 发布
     submit() {
-      console.log('发布')
+      let url = this.id === 0 ? '/video' : `/video/${this.id}`
+      let msg = this.id === 0 ? '发布' : '修改'
+      this.$req.post(url, this.form, { token: true }).then((res) => {
+        uni.showToast({
+          title: msg + '成功',
+          icon: 'none',
+        })
+        uni.navigateBack({ delta: 1 })
+      })
     },
   },
 }

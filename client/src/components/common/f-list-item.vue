@@ -13,7 +13,7 @@ export default {
   props: {
     icon: String,
     title: String,
-    rightText: String,
+    rightText: [Number, String],
     showRightIcon: {
       type: Boolean,
       default: true,

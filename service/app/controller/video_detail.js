@@ -11,6 +11,19 @@ const rules = {
 
 class VideoDetailController extends Controller {
   /**
+   * @description 指定作品下的所有视频
+   * @return {JSON} 返回结果
+   * @memberof VideoDetailController
+   */
+  async index() {
+    const { ctx, app } = this
+    ctx.validate({ video_id: { type: 'int', required: true, desc: '作品id' } })
+    const { video_id } = ctx.params
+    const res = await app.model.VideoDetail.findAll({ where: { video_id } })
+
+    return ctx.apiSuccess({ data: res })
+  }
+  /**
    * @description 添加视频
    * @return {JSON} 返回结果
    * @memberof VideoDetailController
@@ -61,7 +74,7 @@ class VideoDetailController extends Controller {
     ctx.validate({
       id: { type: 'int', required: true, desc: '视频id' },
     })
-    const { id } = ctx.request.body
+    const { id } = ctx.params
     const video = await app.model.VideoDetail.findOne({
       where: { id },
       // 关联查询

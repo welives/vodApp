@@ -87,11 +87,19 @@
                 "colorPressed": "#FB85A7",
                 "float": "right",
                 "fontSize": "14px",
-                "text": "发布"
+                "text": "发布",
+                "width": "44px"
               }
             ]
           }
         }
+      }
+    },
+    {
+      "path": "pages/list/list",
+      "style": {
+        "navigationBarTitleText": "列表",
+        "enablePullDownRefresh": true
       }
     },
     {
@@ -103,7 +111,8 @@
     {
       "path": "pages/user-video/user-video",
       "style": {
-        "navigationBarTitleText": "我的作品"
+        "navigationBarTitleText": "我的作品",
+        "enablePullDownRefresh": true
       }
     },
     {

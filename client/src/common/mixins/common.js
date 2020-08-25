@@ -1,4 +1,10 @@
 export default {
+  data() {
+    return {
+      // 上拉加载的三种文字状态
+      load: { type: 0, text: ['上拉加载更多...', '正在加载中...', '真的一滴都没有了'] },
+    }
+  },
   filters: {
     // 格式化视频时长
     formatVideoTime(data) {
