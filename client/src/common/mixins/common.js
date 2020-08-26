@@ -1,3 +1,4 @@
+import $T from '@/common/time'
 export default {
   data() {
     return {
@@ -20,6 +21,9 @@ export default {
         FHD: '超清',
       }
       return quality[value]
+    },
+    formatTime(value) {
+      return $T.getTime(value)
     },
   },
   methods: {

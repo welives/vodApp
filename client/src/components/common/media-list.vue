@@ -8,7 +8,7 @@
     ></image>
     <view class="flex flex-column flex-1 mx-1">
       <text class="font line-h">{{ item.title }}</text>
-      <text class="font-sm text-light-muted my-1">{{ item.created_at }}</text>
+      <text class="font-sm text-light-muted my-1">{{ item.created_at | formatTime }}</text>
       <view class="flex align-center justify-between text-muted line-h">
         <view class="line-h flex align-center">
           <text class="iconfont iconbofangshu font-md mx-1"></text>
@@ -25,11 +25,13 @@
 </template>
 
 <script>
+import common from '@/common/mixins/common'
 export default {
   props: {
     item: Object,
     index: [Number, String],
   },
+  mixins: [common],
 }
 </script>
 

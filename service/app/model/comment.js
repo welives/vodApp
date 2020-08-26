@@ -50,7 +50,12 @@ module.exports = (app) => {
       defaultValue: 0,
       comment: '回复用户id',
     },
-    created_at: DATE,
+    created_at: {
+      type: DATE,
+      get() {
+        return new Date(this.getDataValue('created_at')).getTime()
+      },
+    },
     updated_at: DATE,
   })
 

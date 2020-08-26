@@ -138,12 +138,15 @@ class UserController extends Controller {
     // 如果之前已经关注过,则取消关注
     if (follow) {
       follow.destroy()
-      return ctx.apiSuccess({ msg: '取消关注' })
+      return ctx.apiSuccess({ msg: '取消关注', data: { isFollow: false } })
     }
     // 检查目标用户是否存在
     !(await service.user.exist(follow_id)) && ctx.apiError({ msg: '要关注的用户不存在' })
 
-    return (await app.model.Follow.create({ user_id, follow_id })) && ctx.apiSuccess({ msg: '关注成功' })
+    return (
+      (await app.model.Follow.create({ user_id, follow_id })) &&
+      ctx.apiSuccess({ msg: '关注成功', data: { isFollow: true } })
+    )
   }
 
   /**

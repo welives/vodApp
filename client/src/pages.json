@@ -156,10 +156,13 @@
     {
       "path": "pages/video-detail/video-detail",
       "style": {
-        "navigationBarTextStyle": "white",
+        // "navigationBarTextStyle": "white",
         "navigationBarTitleText": "",
         "app-plus": {
+          "softinputNavBar": "none",
+          // #ifdef APP-PLUS
           "titleNView": false,
+          // #endif
           "subNVues": [
             {
               "id": "top",

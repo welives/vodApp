@@ -180,47 +180,6 @@
 const dom = weex.requireModule('dom')
 let showToastTimer = null,
   videoBarTimer = null
-// 测试数据
-const demoList = [
-  {
-    index: 0,
-    title: '优化空数据默认显示',
-    poster: 'https://ss2.bdstatic.com/8_V1bjqh_Q23odCf/pacific/1696374343.jpg',
-    list: [
-      {
-        name: '标清',
-        quality: 'SD',
-        url:
-          'https://douyinzcmcss.oss-cn-shenzhen.aliyuncs.com/%E8%AF%BE%E6%97%B61.%20%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D.mp4',
-      },
-      {
-        name: '高清',
-        quality: 'HD',
-        url:
-          'https://douyinzcmcss.oss-cn-shenzhen.aliyuncs.com/%E8%AF%BE%E6%97%B61.%20%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D.mp4',
-      },
-      {
-        name: '超清',
-        quality: 'FHD',
-        url:
-          'https://douyinzcmcss.oss-cn-shenzhen.aliyuncs.com/%E8%AF%BE%E6%97%B61.%20%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D.mp4',
-      },
-    ],
-  },
-  {
-    index: 0,
-    title: '2018年平昌冬',
-    poster: 'https://ss2.bdstatic.com/8_V1bjqh_Q23odCf/pacific/1696374343.jpg',
-    list: [
-      {
-        name: '标清',
-        quality: 'SD',
-        url:
-          'https://douyinzcmcss.oss-cn-shenzhen.aliyuncs.com/%E8%AF%BE%E6%97%B61.%20%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D.mp4',
-      },
-    ],
-  },
-]
 import common from '@/common/mixins/common'
 import fIconBtn from './components/f-icon-btn'
 import fSlider from './components/f-slider'
@@ -321,16 +280,70 @@ export default {
       fontFamily: 'iconfont',
       src: "url('https://at.alicdn.com/t/font_1419176_mzo8rsjxi4c.ttf')",
     })
-    this.videoList = demoList
-    this.detail.title = demoList[0].title
-    this.detail.poster = demoList[0].poster
-    this.detail.src = demoList[0].list[0].url
+    uni.$on('video', this.handleVideoEvent)
   },
   onReady() {
     // 获取播放实例
     this.videoCtx = this.$refs.video
   },
+  // 监听页面卸载
+  onUnload() {
+    uni.$off('video', this.handleVideoEvent)
+  },
   methods: {
+    handleVideoEvent(e) {
+      let i
+      switch (e.type) {
+        case 'init':
+          this.videoIndex = e.params.videoIndex
+          this.videoList = e.params.videos.map((item) => {
+            return {
+              index: 0,
+              title: item.title,
+              poster: e.params.poster,
+              list: [
+                {
+                  name: '标清',
+                  quality: 'SD',
+                  url: item.url,
+                },
+                {
+                  name: '高清',
+                  quality: 'HD',
+                  url: item.url,
+                },
+                {
+                  name: '超清',
+                  quality: 'FHD',
+                  url: item.url,
+                },
+              ],
+            }
+          })
+          this.detail.title = this.videoList[this.videoIndex].title
+          this.detail.poster = this.videoList[this.videoIndex].poster
+          i = this.videoList[this.videoIndex].list.findIndex((v) => {
+            v.quality === this.quality
+          })
+          i === -1
+            ? (this.detail.src = this.videoList[this.videoIndex].list[0].url)
+            : (this.detail.src = this.videoList[this.videoIndex].list[i].url)
+          break
+        case 'change':
+          this.videoCtx.pause()
+          this.videoIndex = e.params.videoIndex
+          i = this.videoList[this.videoIndex].list.findIndex((v) => {
+            v.quality === this.quality
+          })
+          i === -1
+            ? (this.detail.src = this.videoList[this.videoIndex].list[0].url)
+            : (this.detail.src = this.videoList[this.videoIndex].list[i].url)
+          setTimeout(() => {
+            this.videoCtx.play()
+          }, 200)
+          break
+      }
+    },
     // 显示提示框
     showToast(options = {}) {
       this.toast.type = options.type || 'msg'
@@ -397,6 +410,12 @@ export default {
         this.detail.src = item.list[i].url
         this.detail.title = item.title
       }
+      uni.$emit('nvueVideo', {
+        type: 'change',
+        params: {
+          activeIndex: this.videoIndex,
+        },
+      })
       this.showToast({ msg: '切换到' + item.title })
       setTimeout(() => {
         this.videoCtx.playbackRate(this.rate.default)

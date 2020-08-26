@@ -134,13 +134,13 @@ export default {
         },
       ],
       list3: [
-        {
-          cover: '/static/demo/list2/1.jpg',
-          title: 'uni-app视频点播app&小程序项目实战',
-          created_time: '今天 01:06',
-          play_count: 0,
-          danmu_count: 0,
-        },
+        // {
+        //   cover: '/static/demo/list2/1.jpg',
+        //   title: 'uni-app视频点播app&小程序项目实战',
+        //   created_time: '今天 01:06',
+        //   play_count: 0,
+        //   danmu_count: 0,
+        // },
       ],
     }
   },

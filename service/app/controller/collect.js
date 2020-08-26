@@ -23,12 +23,15 @@ class CollectController extends Controller {
     // 如果之前已经收藏过,则取消收藏
     if (collect) {
       collect.destroy()
-      return ctx.apiSuccess({ msg: '取消收藏' })
+      return ctx.apiSuccess({ msg: '取消收藏', data: { isCollect: false } })
     }
     const video = await app.model.Video.findOne({ where: { id: video_id } })
     !video && ctx.apiError({ msg: '视频不存在' })
 
-    return (await app.model.Collect.create({ user_id, video_id })) && ctx.apiSuccess({ msg: '收藏成功' })
+    return (
+      (await app.model.Collect.create({ user_id, video_id })) &&
+      ctx.apiSuccess({ msg: '收藏成功', data: { isCollect: true } })
+    )
   }
 
   /**

@@ -1,7 +1,7 @@
 <template>
   <view>
     <!-- 动态设置状态栏高度 -->
-    <view :style="`height:${statusBarHeight}px;`"></view>
+    <view :style="'height:' + statusBarHeight + 'px;'"></view>
     <view class="flex align-center" style="height: 44px;" @click="back()">
       <view
         class="flex align-center justify-center animate__animated animate__fast"
@@ -50,15 +50,10 @@
       </main-big-button>
     </view>
     <view class="flex px-4 mt-4">
-      <text
-        class="ml-auto px-2 text-light-muted"
-        @click="changeType"
-        v-html="
-          type === 'login'
-            ? `还没账号？<text class='text-main'>去注册</text>`
-            : `已有账号，<text class='text-main'>去登入</text>`
-        "
-      ></text>
+      <text class="ml-auto px-2 text-light-muted" @click="changeType">
+        {{ type === 'login' ? '还没账号？' : '已有账号，'
+        }}<text class="text-main">{{ type === 'login' ? '去注册' : '去登入' }}</text>
+      </text>
     </view>
     <view class="flex align-center justify-center py-5">
       <view class="" style="width: 100rpx; height: 2rpx; background-color: #e3e1dd;"></view>

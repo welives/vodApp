@@ -1,7 +1,7 @@
 <template>
   <view>
     <view class="px-1" v-for="(item, index) in list" :key="index">
-      <media-list :item="item" :index="index"></media-list>
+      <media-list :item="item" :index="index" @click="detail(item)"></media-list>
     </view>
     <!-- 无数据提示 -->
     <view v-if="list.length === 0" class="flex align-center justify-center text-light-muted" style="height: 200rpx;"
@@ -91,6 +91,11 @@ export default {
           }
           this.load.type = 0
         })
+    },
+    detail(item) {
+      uni.navigateTo({
+        url: '../video-detail/video-detail?id=' + item.id,
+      })
     },
   },
 }

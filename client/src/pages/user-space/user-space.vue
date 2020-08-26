@@ -31,7 +31,7 @@
         >
       </view>
     </view>
-    <scroll-view scroll-y :style="`height:${scrollHeight}px`" style="position: relative;">
+    <scroll-view scroll-y :style="'height:' + scrollHeight + 'px;'" style="position: relative;">
       <!-- 选项卡 开始 -->
       <view
         class="flex align-center bg-white position-absolute"
@@ -52,7 +52,7 @@
         :duration="300"
         @change="changeSwiper"
         style="position: absolute; top: 44px; width: 100%;"
-        :style="`height:${scrollHeight - 44}px`"
+        :style="'height:' + (scrollHeight - 44) + 'px;'"
       >
         <swiper-item v-for="(tab, tabI) in tabBars" :key="tabI">
           <scroll-view scroll-y style="height: 100%;">
