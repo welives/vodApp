@@ -1,5 +1,5 @@
 <template>
-  <view class="flex align-center py-2 border-bottom" style="width: 100%;" @click="open">
+  <view class="flex align-center py-2 border-bottom w-100" @click="open">
     <image
       class="rounded-lg mx-1 flex-shrink"
       :src="item.cover"

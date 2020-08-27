@@ -1,9 +1,9 @@
 <template>
   <view>
     <view class="px-1 flex" v-for="(item, index) in list" :key="index">
-      <uni-swipe-action>
+      <uni-swipe-action class="w-100">
         <uni-swipe-action-item :options="options" @click="remove(item)">
-          <media-list :item="item" :index="index"></media-list>
+          <media-list class="w-100" :item="item" :index="index"></media-list>
         </uni-swipe-action-item>
       </uni-swipe-action>
     </view>

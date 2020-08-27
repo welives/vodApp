@@ -1,7 +1,22 @@
 <template>
   <view>
+    <!-- #ifdef MP -->
+    <!-- 导航栏 -->
+    <view class="flex align-center fixed-top bg-white" style="height: 44px;">
+      <!-- 搜索框 -->
+      <input
+        v-model="keyword"
+        class="flex align-center flex-1 ml-2 px-1 py-1 rounded"
+        style="background-color: #F6F7F8;color: #959FA0;"
+        type="text"
+        placeholder="请输入"
+      />
+      <view class="flex align-center px-2" style="color: #959FA0;" @click="search">搜索</view>
+    </view>
+    <view style="height: 44px;"></view>
+    <!-- #endif -->
     <view class="px-1" v-for="(item, index) in list" :key="index">
-      <media-list :item="item" :index="index" @click="detail(item)"></media-list>
+      <media-list class="w-100" :item="item" :index="index" @click="detail(item)"></media-list>
     </view>
     <!-- 无数据提示 -->
     <view v-if="list.length === 0" class="flex align-center justify-center text-light-muted" style="height: 200rpx;"

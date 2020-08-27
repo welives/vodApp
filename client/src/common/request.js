@@ -65,8 +65,8 @@ export default {
               })
             }
             // token不合法，直接退出登录
-            if (result.data.data === 'Token 令牌不合法!') {
-              // $store.dispatch('user/logout')
+            if (result.data.msg === 'Token 令牌不合法!') {
+              $store.dispatch('user/logout')
             }
             return rej(result.data)
           }

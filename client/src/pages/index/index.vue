@@ -105,7 +105,7 @@
     <!-- 列表样式三 -->
     <card title="为你推荐">
       <view class="px-2" v-for="(item, index) in list" :key="index">
-        <media-list :item="item" :index="index" @click="openDetail(item.id)"></media-list>
+        <media-list class="w-100" :item="item" :index="index" @click="openDetail(item.id)"></media-list>
       </view>
     </card>
   </view>

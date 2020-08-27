@@ -1,5 +1,5 @@
 <template>
-  <view>
+  <view @touchmove.stop.prevent="() => {}">
     <navigator v-if="!user" url="../login/login">
       <view class="p-3 flex align-center">
         <image
@@ -31,25 +31,30 @@
       </view>
     </view>
     <view class="f-divider"></view>
-    <f-list-item
-      icon="iconshipin"
-      title="我的作品"
-      :rightText="videoCount + '个'"
-      :showRightIcon="false"
-      @click="navigateTo('user-video')"
-    ></f-list-item>
-    <f-list-item icon="iconshoucang" title="收藏" @click="navigateTo('user-collect')"></f-list-item>
-    <f-list-item
-      icon="iconguanzhu"
-      title="关注"
-      :rightText="followCount"
-      @click="navigateTo('user-follow')"
-    ></f-list-item>
-    <f-list-item icon="iconlishi" title="历史记录" @click="navigateTo('user-history')"></f-list-item>
-    <view class="f-divider"></view>
-    <view class="px-3 py-2">
-      <main-big-button @click="add">立即投稿</main-big-button>
-    </view>
+    <block v-if="user">
+      <f-list-item
+        icon="iconshipin"
+        title="我的作品"
+        :rightText="videoCount + '个'"
+        :showRightIcon="false"
+        @click="navigateTo('user-video')"
+      ></f-list-item>
+      <f-list-item icon="iconshoucang" title="收藏" @click="navigateTo('user-collect')"></f-list-item>
+      <f-list-item
+        icon="iconguanzhu"
+        title="关注"
+        :rightText="followCount"
+        @click="navigateTo('user-follow')"
+      ></f-list-item>
+      <f-list-item icon="iconlishi" title="历史记录" @click="navigateTo('user-history')"></f-list-item>
+      <!-- #ifdef MP -->
+      <f-list-item icon="iconshezhi" title="我的设置" @click="navigateTo('user-set')"></f-list-item>
+      <!-- #endif -->
+      <view class="f-divider"></view>
+      <view class="px-3 py-2">
+        <main-big-button @click="add">立即投稿</main-big-button>
+      </view>
+    </block>
     <!-- 弹框 -->
     <f-popup ref="popup">
       <view class="position-absolute left-0 bottom-0 right-0 bg-white" @click.stop="() => {}">

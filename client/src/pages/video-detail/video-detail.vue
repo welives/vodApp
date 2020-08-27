@@ -1,5 +1,5 @@
 <template>
-  <view style="line-height: 0;">
+  <view @touchmove.stop.prevent="() => {}">
     <!-- #ifndef APP-PLUS -->
     <video id="myVideo" :src="src" :poster="poster" style="height: 225px; width: 100%;" controls></video>
     <!-- #endif -->
@@ -7,7 +7,7 @@
       <!-- 选项卡 开始 -->
       <view
         class="border-bottom border-light-secondary bg-white flex align-stretch position-fixed"
-        style="height: 80rpx; left: 0; right: 0; z-index: 100;"
+        style="height: 40px; left: 0; right: 0; z-index: 100;"
       >
         <block v-for="(tab, index) in tabBars" :key="index">
           <view class="flex-1 flex align-center justify-center" @click="tabIndex = index">
@@ -20,7 +20,7 @@
           </view>
         </block>
       </view>
-      <view style="height: 80rpx;"></view>
+      <view style="height: 40px;"></view>
       <!-- 选项卡 结束 -->
 
       <!-- 简介 开始 -->
@@ -91,7 +91,7 @@
 
         <!-- 热门视频 开始 -->
         <view class="px-2" v-for="(item, index) in hot" :key="index">
-          <media-list :item="item" :index="index"></media-list>
+          <media-list class="w-100" :item="item" :index="index"></media-list>
         </view>
         <!-- 热门视频 结束 -->
       </view>
@@ -142,7 +142,7 @@
     </scroll-view>
 
     <f-popup ref="popup">
-      <view class="position-absolute bottom-0 left-0 right-0 bg-white" @click.stop="() => {}">
+      <view class="position-absolute bottom-0 left-0 right-0 bg-white" @click.stop.prevent="() => {}">
         <view style="height: 600rpx;">
           <view class="flex align-center justify-between">
             <text class="font-md ml-3">选集</text>
@@ -175,7 +175,19 @@
     </f-popup>
 
     <f-popup ref="comment">
-      <view class="position-absolute bottom-0 left-0 right-0 bg-white" @click.stop="() => {}">
+      <!-- #ifdef APP-PLUS -->
+      <view
+        class="position-absolute left-0 right-0 bg-white"
+        :class="keyboardShow ? '' : 'bottom-0'"
+        @click.stop.prevent="() => {}"
+      >
+      <!-- #endif -->
+      <!-- #ifndef APP-PLUS -->
+      <view
+        class="position-absolute bottom-0 left-0 right-0 bg-white"
+        @click.stop.prevent="() => {}"
+      >
+      <!-- #endif -->
         <view class="flex align-center px-3" style="height: 160rpx;">
           <input
             type="text"
@@ -184,6 +196,7 @@
             :placeholder="reply_user.id ? '@' + reply_user.name : '说点什么吧'"
             placeholder-class="text-light-muted"
             v-model="content"
+            focus
           />
           <view class="rounded bg-main text-white px-2 py-1" hover-class="bg-main-hover" @click="sendComment">
             <text>回复</text>
@@ -240,6 +253,7 @@ export default {
       content: '',
       reply_id: 0,
       reply_user: {},
+      keyboardShow: false,
     }
   },
   computed: {
@@ -252,7 +266,7 @@ export default {
   },
   onLoad(e) {
     let res = uni.getSystemInfoSync()
-    this.scrollHeight = res.windowHeight - 225
+    this.scrollHeight = res.windowHeight - res.windowTop - 225
     if (!e.id) {
       this.back()
       uni.showToast({
@@ -290,6 +304,13 @@ export default {
     // 监听软件盘高度变化
     uni.onKeyboardHeightChange((res) => {
       if (res.height === 0) {
+        this.keyboardShow = false
+        uni.pageScrollTo({
+          scrollTop: 0,
+          duration: 0,
+        })
+      } else {
+        this.keyboardShow = true
         uni.pageScrollTo({
           scrollTop: 0,
           duration: 0,
@@ -379,7 +400,6 @@ export default {
           { token: true },
         )
         .then((res) => {
-          console.log(this.content)
           this.getComments()
           this.$refs.comment.hide()
         })

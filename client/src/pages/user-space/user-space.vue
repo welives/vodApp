@@ -1,7 +1,7 @@
 <template>
-  <view style="line-height: 0;">
+  <view style="line-height:0;">
     <image src="/static/demo/list2/3.jpg" mode="aspectFill" style="width: 100%; height: 160px;"></image>
-    <view class="border-bottom" style="height: 180px;">
+    <view class="border-bottom">
       <view class="flex align-center justify-between px-3 py-1">
         <image
           :src="user.avatar || '/static/demo/6.jpg'"
@@ -43,7 +43,7 @@
       <!-- 选项卡 开始 -->
       <view
         class="flex align-center bg-white position-absolute"
-        style="height: 44px; top: 0; left: 0; right: 0; z-index: 100;"
+        style="height: 40px; top: 0; left: 0; right: 0; z-index: 100;"
       >
         <view
           class="flex-1 flex align-center justify-center"
@@ -59,14 +59,14 @@
         :current="tabIndex"
         :duration="300"
         @change="changeSwiper"
-        style="position: absolute; top: 44px; width: 100%;"
-        :style="'height:' + (scrollHeight - 44) + 'px;'"
+        style="position: absolute; top: 40px; width: 100%;"
+        :style="'height:' + (scrollHeight - 40) + 'px;'"
       >
         <swiper-item v-for="(tab, tabI) in tabBars" :key="tabI">
           <scroll-view scroll-y style="height: 100%;" @scrolltolower="scrolltolower(tabI)">
             <view class="f-divider"></view>
             <view class="px-1" v-for="(item, index) in list[tabI].data" :key="index">
-              <media-list :item="item" :index="index"></media-list>
+              <media-list class="w-100" :item="item" :index="index"></media-list>
             </view>
             <!-- 无数据提示 -->
             <view
@@ -153,7 +153,8 @@ export default {
     this.getUserInfo(e.user_id)
     this.getData()
     let res = uni.getSystemInfoSync()
-    this.scrollHeight = res.windowHeight - res.statusBarHeight - 44
+    console.log(res)
+    this.scrollHeight = res.windowHeight - res.statusBarHeight - res.windowTop - 44
   },
   methods: {
     getUserInfo(user_id) {

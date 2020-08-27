@@ -1,7 +1,7 @@
 <template>
   <view style="line-height: 0;">
     <view class="px-1" v-for="(item, index) in list" :key="index">
-      <media-list :item="item" :index="index" @click="detail(item)"></media-list>
+      <media-list class="w-100" :item="item" :index="index" @click="detail(item)"></media-list>
       <view class="flex text-center" style="height: 80rpx;">
         <view class="flex-1 my-auto" hover-class="bg-light" @click="detail(item)">详情</view>
         <view class="flex-1 my-auto" hover-class="bg-light" @click="edit(item)">修改</view>
@@ -88,7 +88,7 @@ export default {
           } else {
             this.list = [...this.list, ...res]
           }
-          this.load.type = res.length > 0 ? 0 : 2
+          this.load.type = res.length === 10 ? 0 : 2
         })
         .catch((err) => {
           uni.hideLoading()
