@@ -4,11 +4,15 @@
     <!-- 自定义导航栏 -->
     <view class="flex align-center fixed-top bg-white" style="height: 44px;">
       <!-- 搜索框 -->
-      <view class="flex align-center flex-1 ml-2 px-1 rounded" style="background-color: #F6F7F8; color: #959FA0;">
+      <view
+        class="flex align-center flex-1 ml-2 px-1 rounded"
+        style="background-color: #F6F7F8; color: #959FA0;"
+        @click="navigateTo('search')"
+      >
         <text class="iconfont iconsousuokuang"></text>
         <text class="ml-1">uni-app视频点播app&小程序项目实战</text>
       </view>
-      <view class="flex align-center px-2" style="color: #959FA0;">分类</view>
+      <view class="flex align-center px-2" style="color: #959FA0;" @click="navigateTo('cate')">分类</view>
     </view>
     <view style="height: 44px;"></view>
     <!-- #endif -->
@@ -26,7 +30,13 @@
           @change="changeSwiper"
         >
           <swiper-item v-for="(item, index) in swipers" :key="index">
-            <image :src="item.src" mode="aspectFill" class="rounded-lg" style="height: 250rpx; width: 100%;"></image>
+            <image
+              :src="item.cover"
+              mode="aspectFill"
+              class="rounded-lg"
+              style="height: 250rpx; width: 100%;"
+              @click="openDetail(item.video_id)"
+            ></image>
           </swiper-item>
         </swiper>
       </swiper-dot>
@@ -35,15 +45,15 @@
     <card title="为你推荐">
       <view class="f-list">
         <view
-          v-for="(item, index) in 4"
+          v-for="(item, index) in list"
           :key="index"
           class="rounded-lg border position-relative"
           style="margin: 15rpx; width: 328rpx; min-height: 5rpx;"
-          @click="openDetail"
+          @click="openDetail(item.id)"
         >
           <image
             class="rounded-top-lg"
-            src="/static/demo/list2/1.jpg"
+            :src="item.cover"
             mode="aspectFill"
             style="width: 100%; height: 220rpx;"
           ></image>
@@ -52,14 +62,14 @@
             style="height: 65rpx; background-image: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.7));position: absolute; left: 0; right: 0; top: 155rpx;"
           >
             <text class="iconfont iconbofangshu font-md mx-1"></text>
-            <text class="font-sm">1234</text>
+            <text class="font-sm">{{ item.play_count }}</text>
             <text class="iconfont icondanmushu font-md mx-1"></text>
-            <text class="font-sm">5678</text>
+            <text class="font-sm">{{ item.danmu_count }}</text>
           </view>
           <view class="px-1" style="margin-top: -10rpx;">
-            <view class="font">标题</view>
+            <view class="font">{{ item.title }}</view>
             <view class="flex align-center justify-between text-light-muted">
-              <text class="font">恶搞</text>
+              <text class="font">{{ item.category.title }}</text>
               <text class="iconfont icongengduo"></text>
             </view>
           </view>
@@ -71,26 +81,22 @@
     <card title="为你推荐">
       <view class="f-list">
         <view
-          v-for="(item, index) in 6"
+          v-for="(item, index) in list"
           :key="index"
           class="position-relative"
           style="margin: 15rpx; width: 210rpx; min-height: 5rpx;"
+          @click="openDetail(item.id)"
         >
-          <image
-            class="rounded-lg"
-            src="/static/demo/list3/1.webp"
-            mode="aspectFill"
-            style="width: 100%; height: 280rpx;"
-          ></image>
+          <image class="rounded-lg" :src="item.cover" mode="aspectFill" style="width: 100%; height: 280rpx;"></image>
           <view
             class="flex align-center text-white rounded-bottom-lg"
             style="height: 65rpx; background-image: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.7));position: absolute; left: 0; right: 0; top: 215rpx;"
           >
             <text class="iconfont iconbofangshu font-md mx-1"></text>
-            <text class="font-sm">1234</text>
+            <text class="font-sm">{{ item.play_count }}</text>
           </view>
           <view class="px-1 font" style="margin-top: -10rpx;">
-            标题
+            {{ item.title }}
           </view>
         </view>
       </view>
@@ -98,8 +104,8 @@
     <view class="f-divider"></view>
     <!-- 列表样式三 -->
     <card title="为你推荐">
-      <view class="f-list">
-        <media-list v-for="(item, index) in list3" :key="index" :item="item" :index="index"></media-list>
+      <view class="px-2" v-for="(item, index) in list" :key="index">
+        <media-list :item="item" :index="index" @click="openDetail(item.id)"></media-list>
       </view>
     </card>
   </view>
@@ -119,49 +125,56 @@ export default {
     return {
       scrollHeight: 0,
       current: 0,
-      swipers: [
-        {
-          src: '/static/demo/swiper/1.jpg',
-          title: 'uni-app视频点播app&小程序项目实战',
-        },
-        {
-          src: '/static/demo/swiper/2.jpg',
-          title: 'uni-app社区交友app&小程序项目实战',
-        },
-        {
-          src: '/static/demo/swiper/3.jpg',
-          title: 'uni-app商城app&小程序项目实战',
-        },
-      ],
-      list3: [
-        // {
-        //   cover: '/static/demo/list2/1.jpg',
-        //   title: 'uni-app视频点播app&小程序项目实战',
-        //   created_time: '今天 01:06',
-        //   play_count: 0,
-        //   danmu_count: 0,
-        // },
-      ],
+      swipers: [],
+      list: [],
     }
   },
   onLoad() {
     let res = uni.getSystemInfoSync()
     this.scrollHeight = res.windowHeight
+    this.$req.get('/index_data').then((res) => {
+      this.list = res
+    })
+    this.$req.get('/banner_list').then((res) => {
+      this.swipers = res
+    })
   },
   onNavigationBarSearchInputClicked() {
-    console.log('点击了搜索框')
+    uni.navigateTo({
+      url: '../search/search',
+    })
   },
-  onNavigationBarButtonTap() {
-    console.log('点击了按钮')
+  onNavigationBarButtonTap(e) {
+    uni.switchTab({
+      url: '../cate/cate',
+    })
   },
   methods: {
     changeSwiper(e) {
       this.current = e.detail.current
     },
-    openDetail() {
+    openDetail(id) {
       uni.navigateTo({
-        url: '../video-detail/video-detail',
+        url: '../video-detail/video-detail?id=' + id,
       })
+    },
+    navigateTo(path) {
+      switch (path) {
+        case 'index':
+          break
+        case 'cate':
+          uni.switchTab({
+            url: '../cate/cate',
+          })
+          break
+        case 'mine':
+          break
+        default:
+          uni.navigateTo({
+            url: `../${path}/${path}`,
+          })
+          break
+      }
     },
   },
 }

@@ -1,5 +1,5 @@
 <template>
-  <view>
+  <view style="line-height: 0;">
     <view class="px-1" v-for="(item, index) in list" :key="index">
       <media-list :item="item" :index="index" @click="detail(item)"></media-list>
       <view class="flex text-center" style="height: 80rpx;">

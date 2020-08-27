@@ -26,11 +26,13 @@
       <!-- 简介 开始 -->
       <view v-if="tabIndex === 0">
         <view class="px-3 py-2 flex align-center">
-          <image
-            :src="detail.user.avatar || '/static/demo/6.jpg'"
-            class="rounded-circle mr-3"
-            style="height: 80rpx; width: 80rpx;"
-          ></image>
+          <navigator :url="'../user-space/user-space?user_id=' + detail.user.id">
+            <image
+              :src="detail.user.avatar || '/static/demo/6.jpg'"
+              class="rounded-circle mr-3"
+              style="height: 80rpx; width: 80rpx;"
+            ></image>
+          </navigator>
           <view class="flex flex-column">
             <text class="text-main font">{{ detail.user.nickname || detail.user.username }}</text>
             <text class="font-sm text-muted">{{ fansCount }} 粉丝</text>

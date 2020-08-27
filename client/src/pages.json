@@ -20,7 +20,8 @@
                 "text": "分类",
                 "fontSize": "14px",
                 "color": "#959FA0",
-                "colorPressed": "#333333"
+                "colorPressed": "#333333",
+                "width": "44px"
               }
             ]
           }
@@ -76,6 +77,33 @@
       }
     },
     {
+      "path": "pages/search/search",
+      "style": {
+        "app-plus": {
+          "titleNView": {
+            "searchInput": {
+              "align": "left",
+              "backgroundColor": "#F6F7F8",
+              "borderRadius": "6px",
+              "disabled": false,
+              "placeholder": "uni-app视频点播app&小程序项目实战",
+              "placeholderColor": "#959FA0"
+            },
+            "buttons": [
+              {
+                "float": "right",
+                "text": "搜索",
+                "fontSize": "14px",
+                "color": "#959FA0",
+                "colorPressed": "#333333",
+                "width": "44px"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
       "path": "pages/create/create",
       "style": {
         "navigationBarTitleText": "发布作品",
@@ -118,7 +146,35 @@
     {
       "path": "pages/user-collect/user-collect",
       "style": {
+        "enablePullDownRefresh": true,
         "navigationBarTitleText": "我的收藏"
+      }
+    },
+    {
+      "path": "pages/user-follow/user-follow",
+      "style": {
+        "enablePullDownRefresh": true,
+        "navigationBarTitleText": "我的关注"
+      }
+    },
+    {
+      "path": "pages/user-history/user-history",
+      "style": {
+        "navigationBarTitleText": "历史记录",
+        "app-plus": {
+          "titleNView": {
+            "buttons": [
+              {
+                "color": "#FB7299",
+                "colorPressed": "#FB85A7",
+                "float": "right",
+                "fontSize": "14px",
+                "text": "清空",
+                "width": "44px"
+              }
+            ]
+          }
+        }
       }
     },
     {

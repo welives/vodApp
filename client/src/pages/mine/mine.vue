@@ -15,11 +15,13 @@
       </view>
     </navigator>
     <view v-else class="p-3 flex align-center">
-      <image
-        class="rounded-circle flex-shrink"
-        :src="user.avatar || '/static/demo/6.jpg'"
-        style="width: 120rpx; height: 120rpx;"
-      ></image>
+      <navigator :url="'../user-space/user-space?user_id=' + user.id">
+        <image
+          class="rounded-circle flex-shrink"
+          :src="user.avatar || '/static/demo/6.jpg'"
+          style="width: 120rpx; height: 120rpx;"
+        ></image>
+      </navigator>
       <view class="pl-3 flex flex-column flex-1">
         <view class="font-md text-dark">
           {{ user.nickname || user.username }}
@@ -36,9 +38,14 @@
       :showRightIcon="false"
       @click="navigateTo('user-video')"
     ></f-list-item>
-    <f-list-item icon="iconshoucang1" title="收藏" @click="navigateTo('user-collect')"></f-list-item>
-    <f-list-item icon="iconguanzhu" title="关注" :rightText="followCount"></f-list-item>
-    <f-list-item icon="iconlishi" title="历史记录"></f-list-item>
+    <f-list-item icon="iconshoucang" title="收藏" @click="navigateTo('user-collect')"></f-list-item>
+    <f-list-item
+      icon="iconguanzhu"
+      title="关注"
+      :rightText="followCount"
+      @click="navigateTo('user-follow')"
+    ></f-list-item>
+    <f-list-item icon="iconlishi" title="历史记录" @click="navigateTo('user-history')"></f-list-item>
     <view class="f-divider"></view>
     <view class="px-3 py-2">
       <main-big-button @click="add">立即投稿</main-big-button>
@@ -121,7 +128,7 @@ export default {
       this.$refs.popup.hide()
     },
     navigateTo(path) {
-      uni.navigateTo({
+      this.authJump({
         url: `/pages/${path}/${path}`,
       })
       this.hidePopup()

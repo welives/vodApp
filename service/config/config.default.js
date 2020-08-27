@@ -32,6 +32,7 @@ module.exports = (appInfo) => {
       '/user/fans',
       '/user/statistics',
       '/upload',
+      '/banner',
     ],
   }
 

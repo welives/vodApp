@@ -16,6 +16,8 @@ module.exports = (app) => {
 
   // 指定用户的作品列表
   router.get('/video_list/:page', controller.video.index)
+  // 搜索作品
+  router.get('/video_search/:page', controller.video.search)
   // 添加作品
   router.post('/video', controller.video.save)
   // 删除作品
@@ -57,4 +59,11 @@ module.exports = (app) => {
   router.get('/user/statistics', controller.user.statistics)
   // 获取用户相关信息
   router.get('/user/info', controller.user.userInfo)
+
+  // 首页数据
+  router.get('/index_data', controller.video.indexData)
+  // 添加广告
+  router.post('/banner', controller.banner.save)
+  // 广告列表
+  router.get('/banner_list', controller.banner.list)
 }

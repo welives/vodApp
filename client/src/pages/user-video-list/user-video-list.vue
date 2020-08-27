@@ -1,5 +1,5 @@
 <template>
-  <view>
+  <view style="line-height: 0;">
     <block v-for="(item, index) in list" :key="index">
       <!-- 不处于编辑状态 -->
       <view v-if="!item.isEdit" class="bg-white">

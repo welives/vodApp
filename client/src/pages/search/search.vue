@@ -28,36 +28,24 @@ export default {
   mixins: [common],
   data() {
     return {
-      category_id: 0,
       page: 1,
+      keyword: '',
       list: [],
     }
   },
-  // 页面加载
-  onLoad(e) {
-    e.id && (this.category_id = e.id)
-    e.title &&
-      uni.setNavigationBarTitle({
-        title: e.title,
+  onNavigationBarButtonTap(e) {
+    if (this.keyword === '') {
+      return uni.showToast({
+        title: '请输入关键字',
+        icon: 'none',
       })
-    this.getData()
-  },
-  // 监听下拉刷新事件
-  onPullDownRefresh() {
+    }
     this.page = 1
-    this.getData()
-      .then((res) => {
-        uni.stopPullDownRefresh()
-        uni.showToast({
-          title: '刷新成功',
-          icon: 'none',
-        })
-      })
-      .catch((err) => {
-        uni.stopPullDownRefresh()
-      })
+    this.search()
   },
-  // 监听页面滚动到底部的事件
+  onNavigationBarSearchInputChanged(e) {
+    this.keyword = e.text
+  },
   onReachBottom(e) {
     if (this.load.type !== 2) {
       if (this.load.type === 1) return
@@ -65,23 +53,18 @@ export default {
       setTimeout(() => {
         this.load.type = 1
         this.page++
-        this.getData()
+        this.search()
       }, 250)
     }
   },
   methods: {
-    getData() {
-      let url = `/category/${this.category_id}/video/${this.page}`
+    search() {
       uni.showLoading({ title: '加载中...' })
       return this.$req
-        .get(url)
+        .get(`/video_search/${this.page}?keyword=${this.keyword}`)
         .then((res) => {
           uni.hideLoading()
-          if (this.page === 1) {
-            this.list = res
-          } else {
-            this.list = [...this.list, ...res]
-          }
+          this.list = this.page === 1 ? res : [...this.list, ...res]
           this.load.type = res.length === 10 ? 0 : 2
         })
         .catch((err) => {

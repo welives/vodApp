@@ -9,6 +9,10 @@ const rules = {
   desc: { type: 'string', required: true, desc: '视频简介' },
 }
 class VideoController extends Controller {
+  // app 首页数据
+  async indexData() {
+    this.ctx.apiSuccess({ data: await this.hot() })
+  }
   /**
    * @description 指定用户的作品列表
    * @return {JSON} 返回结果
@@ -23,6 +27,25 @@ class VideoController extends Controller {
     })
     const { user_id } = ctx.query
     const res = await ctx.page(app.model.Video, { user_id })
+
+    return ctx.apiSuccess({ data: res })
+  }
+
+  // 搜索
+  async search() {
+    const { ctx, app } = this
+    ctx.validate({
+      keyword: { type: 'string', required: true, desc: '关键字' },
+      page: { type: 'int', required: true, desc: '页码' },
+      limit: { type: 'int', required: false, desc: '每页显示条数' },
+    })
+    const { keyword } = ctx.query
+    const Op = app.Sequelize.Op
+    const res = await ctx.page(app.model.Video, {
+      title: {
+        [Op.like]: '%' + keyword + '%',
+      },
+    })
 
     return ctx.apiSuccess({ data: res })
   }
@@ -144,6 +167,12 @@ class VideoController extends Controller {
   async hot() {
     const { app } = this
     return await app.model.Video.findAll({
+      include: [
+        {
+          model: app.model.Category,
+          attributes: ['id', 'title'],
+        },
+      ],
       order: [
         ['id', 'DESC'],
         ['play_count', 'DESC'],

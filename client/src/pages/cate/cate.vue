@@ -4,7 +4,11 @@
     <!-- 自定义导航栏 -->
     <view class="flex align-center fixed-top bg-white" style="height: 44px;">
       <!-- 搜索框 -->
-      <view class="flex align-center flex-1 mx-2 px-1 rounded" style="background-color: #F6F7F8; color: #959FA0;">
+      <view
+        class="flex align-center flex-1 mx-2 px-1 rounded"
+        style="background-color: #F6F7F8; color: #959FA0;"
+        @click="navigateTo('search')"
+      >
         <text class="iconfont iconsousuokuang"></text>
         <text class="ml-1">uni-app视频点播app&小程序项目实战</text>
       </view>
@@ -60,6 +64,11 @@ export default {
         uni.stopPullDownRefresh()
       })
   },
+  onNavigationBarSearchInputClicked() {
+    uni.navigateTo({
+      url: '../search/search',
+    })
+  },
   methods: {
     getData() {
       uni.showLoading({ title: '加载中...' })
@@ -76,6 +85,11 @@ export default {
     open(item) {
       uni.navigateTo({
         url: `../list/list?id=${item.id}&title=${item.title}`,
+      })
+    },
+    navigateTo(path) {
+      uni.navigateTo({
+        url: `../${path}/${path}`,
       })
     },
   },

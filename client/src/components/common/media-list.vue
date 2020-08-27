@@ -1,5 +1,5 @@
 <template>
-  <view class="flex align-center py-2 border-bottom" style="width: 100%;" @click="$emit('click')">
+  <view class="flex align-center py-2 border-bottom" style="width: 100%;" @click="open">
     <image
       class="rounded-lg mx-1 flex-shrink"
       :src="item.cover"
@@ -32,6 +32,27 @@ export default {
     index: [Number, String],
   },
   mixins: [common],
+  methods: {
+    // 数组置顶
+    toFirst(arr, index) {
+      if (index != 0) {
+        arr.unshift(arr.splice(index, 1)[0])
+      }
+      return arr
+    },
+    open() {
+      // 存储到历史记录中
+      let list = uni.getStorageSync('history')
+      list = list ? JSON.parse(list) : []
+      let index = list.findIndex((v) => v.id === this.item.id)
+      index === -1 ? list.unshift(this.item) : this.toFirst(list, index)
+      uni.setStorage({
+        key: 'history',
+        data: JSON.stringify(list),
+      })
+      this.$emit('click')
+    },
+  },
 }
 </script>
 

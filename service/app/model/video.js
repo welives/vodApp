@@ -86,6 +86,8 @@ module.exports = (app) => {
     Video.belongsTo(app.model.User)
     // 关联子视频,一个作品可以有若干个章节的视频,即一对多
     Video.hasMany(app.model.VideoDetail)
+    // 关联分类
+    Video.belongsTo(app.model.Category)
   }
 
   return Video

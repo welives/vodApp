@@ -1,8 +1,19 @@
 <template>
   <view>
-    <view class="px-1" v-for="(item, index) in list" :key="index">
-      <media-list :item="item" :index="index" @click="detail(item)"></media-list>
-    </view>
+    <block v-for="(item, index) in list" :key="index">
+      <uni-swipe-action>
+        <uni-swipe-action-item :options="options" @click="unFollow(item.id)">
+          <f-list-item :title="item.name" :showRightIcon="false">
+            <image
+              slot="icon"
+              class="rounded-circle mr-2"
+              :src="item.avatar || '/static/demo/6.jpg'"
+              style="width: 80rpx; height: 80rpx;"
+            ></image>
+          </f-list-item>
+        </uni-swipe-action-item>
+      </uni-swipe-action>
+    </block>
     <!-- 无数据提示 -->
     <view v-if="list.length === 0" class="flex align-center justify-center text-light-muted" style="height: 200rpx;"
       >暂无数据...</view
@@ -20,26 +31,31 @@
 
 <script>
 import common from '@/common/mixins/common'
-import mediaList from '@/components/common/media-list'
+import uniSwipeAction from '@/components/uni-ui/uni-swipe-action/uni-swipe-action'
+import uniSwipeActionItem from '@/components/uni-ui/uni-swipe-action-item/uni-swipe-action-item'
+import fListItem from '@/components/common/f-list-item'
 export default {
   components: {
-    mediaList,
+    fListItem,
+    uniSwipeAction,
+    uniSwipeActionItem,
   },
   mixins: [common],
   data() {
     return {
-      category_id: 0,
       page: 1,
       list: [],
+      options: [
+        {
+          text: '取消关注',
+          style: {
+            backgroundColor: 'rgb(255,58,49)',
+          },
+        },
+      ],
     }
   },
-  // 页面加载
-  onLoad(e) {
-    e.id && (this.category_id = e.id)
-    e.title &&
-      uni.setNavigationBarTitle({
-        title: e.title,
-      })
+  onLoad() {
     this.getData()
   },
   // 监听下拉刷新事件
@@ -71,10 +87,9 @@ export default {
   },
   methods: {
     getData() {
-      let url = `/category/${this.category_id}/video/${this.page}`
       uni.showLoading({ title: '加载中...' })
       return this.$req
-        .get(url)
+        .get(`/user/follows/${this.page}`, { token: true })
         .then((res) => {
           uni.hideLoading()
           if (this.page === 1) {
@@ -92,9 +107,14 @@ export default {
           this.load.type = 0
         })
     },
-    detail(item) {
-      uni.navigateTo({
-        url: '../video-detail/video-detail?id=' + item.id,
+    unFollow(follow_id) {
+      this.$req.post('/user/follow', { follow_id }, { token: true }).then((res) => {
+        let index = this.list.findIndex((v) => v.id === follow_id)
+        this.list.splice(index, 1)
+        uni.showToast({
+          title: '取消关注',
+          icon: 'none',
+        })
       })
     },
   },
