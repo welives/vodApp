@@ -153,7 +153,6 @@ export default {
     this.getUserInfo(e.user_id)
     this.getData()
     let res = uni.getSystemInfoSync()
-    console.log(res)
     this.scrollHeight = res.windowHeight - res.statusBarHeight - res.windowTop - 44
   },
   methods: {
