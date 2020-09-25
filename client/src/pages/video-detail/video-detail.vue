@@ -181,13 +181,6 @@
         :class="keyboardShow ? '' : 'bottom-0'"
         @click.stop.prevent="() => {}"
       >
-      <!-- #endif -->
-      <!-- #ifndef APP-PLUS -->
-      <view
-        class="position-absolute bottom-0 left-0 right-0 bg-white"
-        @click.stop.prevent="() => {}"
-      >
-      <!-- #endif -->
         <view class="flex align-center px-3" style="height: 160rpx;">
           <input
             type="text"
@@ -203,6 +196,25 @@
           </view>
         </view>
       </view>
+      <!-- #endif -->
+      <!-- #ifndef APP-PLUS -->
+      <view class="position-absolute bottom-0 left-0 right-0 bg-white" @click.stop.prevent="() => {}">
+        <view class="flex align-center px-3" style="height: 160rpx;">
+          <input
+            type="text"
+            class="bg-light rounded mr-3 px-2 flex-1"
+            style="height: 60rpx;"
+            :placeholder="reply_user.id ? '@' + reply_user.name : '说点什么吧'"
+            placeholder-class="text-light-muted"
+            v-model="content"
+            focus
+          />
+          <view class="rounded bg-main text-white px-2 py-1" hover-class="bg-main-hover" @click="sendComment">
+            <text>回复</text>
+          </view>
+        </view>
+      </view>
+      <!-- #endif -->
     </f-popup>
   </view>
 </template>

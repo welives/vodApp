@@ -4,7 +4,7 @@ export default {
   // 全局配置
   common: {
     // #ifndef H5
-    baseUrl: 'http://192.168.5.5:7001',
+    baseUrl: 'http://192.168.5.7:7001',
     // #endif
     // #ifdef H5
     baseUrl: '/api',
