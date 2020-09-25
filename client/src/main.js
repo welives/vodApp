@@ -1,3 +1,4 @@
+import '@/common/pc'
 import Vue from 'vue'
 import App from './App'
 import $req from './common/request'
