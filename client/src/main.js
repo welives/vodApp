@@ -1,4 +1,6 @@
+// #ifndef APP-PLUS
 import '@/common/pc'
+// #endif
 import Vue from 'vue'
 import App from './App'
 import $req from './common/request'
