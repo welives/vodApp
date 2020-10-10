@@ -1,4 +1,4 @@
-// #ifndef APP-PLUS
+// #ifdef H5
 import '@/common/pc'
 // #endif
 import Vue from 'vue'
